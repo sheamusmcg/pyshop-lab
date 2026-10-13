@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Test / coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# SQLite (the app uses in-memory, but ignore any stray file DBs)
+*.db
+*.sqlite
+*.sqlite3
+
+# Playwright
+/test-results/
+/playwright-report/
+
+# Editor / OS
+.DS_Store
+.idea/
+.vscode/
+*.swp

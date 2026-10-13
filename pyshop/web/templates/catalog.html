@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PyShop Catalog</title>
+  <style>
+    :root {
+      --bar: #23282d; --bg: #f5f6f8; --card: #ffffff;
+      --ink: #1b1f24; --muted: #6b7280; --line: #e3e6ea;
+      --accent: #178ca4; --accent2: #0f6f82; --vs: #8a4fbe;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+           background: var(--bg); color: var(--ink); }
+
+    /* top bar, eShopOnWeb-style */
+    header.topbar { background: var(--bar); color: #fff; padding: 14px 24px;
+                    display: flex; align-items: center; gap: 12px; }
+    header.topbar .logo { width: 30px; height: 30px; border-radius: 6px;
+        background: linear-gradient(135deg, var(--accent), var(--vs)); flex: 0 0 auto; }
+    header.topbar .name { font-size: 20px; font-weight: 700; letter-spacing: .3px; }
+    header.topbar .name small { font-weight: 400; color: #aeb6bf; font-size: 13px; margin-left: 8px; }
+
+    .wrap { max-width: 1040px; margin: 0 auto; padding: 24px; }
+
+    /* filter bar */
+    form#filters { display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
+        background: var(--card); border: 1px solid var(--line); border-radius: 10px;
+        padding: 14px 16px; margin-bottom: 20px; }
+    form#filters label { font-size: 13px; color: var(--muted); margin-right: -4px; }
+    form#filters select { font-size: 14px; padding: 8px 10px; border: 1px solid var(--line);
+        border-radius: 8px; background: #fff; color: var(--ink); min-width: 140px; }
+
+    /* product grid */
+    ul#catalog { list-style: none; margin: 0; padding: 0;
+        display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 18px; }
+    li.item { background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+        overflow: hidden; display: flex; flex-direction: column;
+        transition: box-shadow .15s ease, transform .15s ease; }
+    li.item:hover { box-shadow: 0 6px 20px rgba(20,30,40,.10); transform: translateY(-2px); }
+    li.item .thumb { height: 140px; display: flex; align-items: center; justify-content: center;
+        color: #fff; font-size: 34px; font-weight: 700; letter-spacing: .5px; }
+    li.item .thumb.azure { background: linear-gradient(135deg, #0a84c6, #0e6fa6); }
+    li.item .thumb.vs    { background: linear-gradient(135deg, #8a4fbe, #6f3ca0); }
+    li.item .body { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
+    li.item .pname { font-size: 15px; font-weight: 600; }
+    li.item .price { font-size: 18px; font-weight: 700; color: var(--accent2); }
+    li.item .cart { margin-top: auto; border: 0; background: var(--accent); color: #fff;
+        font-size: 13px; font-weight: 600; padding: 9px 0; border-radius: 8px; cursor: pointer; }
+    li.item .cart:hover { background: var(--accent2); }
+
+    #count { margin-top: 22px; color: var(--muted); font-size: 14px; }
+    .empty { background: var(--card); border: 1px dashed var(--line); border-radius: 12px;
+        padding: 40px; text-align: center; color: var(--muted); }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="logo"></div>
+    <div class="name">PyShop <small>reference storefront</small></div>
+  </header>
+
+  <div class="wrap">
+    <form method="get" id="filters">
+      <label for="brand">Brand</label>
+      <select name="brand" id="brand" onchange="this.form.submit()">
+        <option value="">All brands</option>
+        <option value="1" {% if brand_id==1 %}selected{% endif %}>Azure</option>
+        <option value="2" {% if brand_id==2 %}selected{% endif %}>Visual Studio</option>
+      </select>
+      <label for="type">Type</label>
+      <select name="type" id="type" onchange="this.form.submit()">
+        <option value="">All types</option>
+        <option value="1" {% if type_id==1 %}selected{% endif %}>Mug</option>
+        <option value="2" {% if type_id==2 %}selected{% endif %}>T-Shirt</option>
+      </select>
+      <!-- Lab feature: a price-range dropdown goes here, next to brand/type -->
+    </form>
+
+    {% if items %}
+    <ul id="catalog">
+      {% for item in items %}
+        <li class="item" data-price="{{ item.price }}">
+          <div class="thumb {{ 'azure' if item.brand_id == 1 else 'vs' }}">
+            {{ item.name[:2]|upper }}
+          </div>
+          <div class="body">
+            <div class="pname">{{ item.name }}</div>
+            <div class="price">${{ "%.2f"|format(item.price) }}</div>
+            <button type="button" class="cart">Add to basket</button>
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <div class="empty">No products match these filters.</div>
+    {% endif %}
+
+    <p id="count">Showing {{ items|length }} of {{ total }}</p>
+  </div>
+</body>
+</html>
