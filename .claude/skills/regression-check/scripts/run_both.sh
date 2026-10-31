@@ -39,7 +39,7 @@ python3 "$HERE/capture.py" --config "$BASE_CFG" --repo-root "$WT" --out "$OUT/ba
 python3 "$HERE/capture.py" --config "$CFG" --repo-root "$REPO" --out "$OUT/candidate" --label "candidate:$(git -C "$REPO" rev-parse --abbrev-ref HEAD)"
 echo
 set +e
-python3 "$HERE/compare.py" --baseline "$OUT/base" --candidate "$OUT/candidate" --json "$OUT/report.json"
+python3 "$HERE/compare.py" --baseline "$OUT/base" --candidate "$OUT/candidate" --config "$CFG" --json "$OUT/report.json"
 RC=$?
 set -e
 echo
