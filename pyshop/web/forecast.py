@@ -51,8 +51,14 @@ def update_forecast(fund_id):
     except (KeyError, TypeError, ValueError):
         return jsonify({"error": "value required"}), 400
     session.commit()
-    cache.invalidate(f"forecast:{fund_id}")
+    _after_update(fund_id)
     return jsonify({"fund_id": fund_id, "updated": True, "value": row.value})
+
+
+def _after_update(fund_id):
+    """Post-update hooks. Cache invalidation moved to the write-behind worker
+    in the services refactor; nothing to do synchronously."""
+    return None
 
 
 @forecast_bp.get("/report/holdings")
