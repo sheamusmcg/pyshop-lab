@@ -1,5 +1,5 @@
 {
-  "captured_at_commit": "2f73d573d0dcd3d291bb5dabdaa879749cdb5e0b",
+  "captured_at_commit": "47182e6206029708ab763f77ad205d6f13874b5e",
   "branch": "s2-platform",
   "dirty_worktree": true,
   "label": "base",
@@ -367,6 +367,12 @@
           "load:pricing-v2"
         ],
         [
+          57,
+          "2026-10-31",
+          112.8,
+          "load:pricing-v2"
+        ],
+        [
           58,
           "2026-10-31",
           114.2,
@@ -377,12 +383,6 @@
           "2026-10-31",
           115.6,
           "load:pricing-v2"
-        ],
-        [
-          60,
-          "2026-10-31",
-          115.0,
-          "load:pricing-legacy"
         ],
         [
           61,
@@ -1223,10 +1223,10 @@
           "outside tolerance"
         ],
         [
-          57,
+          60,
           "2026-10-31",
-          115.8,
-          112.35,
+          118.0,
+          114.75,
           "outside tolerance"
         ],
         [

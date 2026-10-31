@@ -1,5 +1,5 @@
 {
-  "captured_at_commit": "2f73d573d0dcd3d291bb5dabdaa879749cdb5e0b",
+  "captured_at_commit": "47182e6206029708ab763f77ad205d6f13874b5e",
   "branch": "s2-platform",
   "dirty_worktree": true,
   "label": "base",
@@ -13,11 +13,11 @@
     "command": "python -m pyshop.batch.load_prices --file data/prices_2026-10-31.csv --as-of 2026-10-31 --region apac",
     "exit_code": 0,
     "stdout_tail": [
-      "load_prices: as_of=2026-10-31 region=apac loaded=66 rejected=0"
+      "load_prices: as_of=2026-10-31 region=apac loaded=65 rejected=1"
     ],
     "summary": {
-      "loaded": 66,
-      "rejected": 0
+      "loaded": 65,
+      "rejected": 1
     }
   },
   "tables": {
@@ -139,12 +139,6 @@
           53,
           "2026-10-31",
           109.2,
-          "load:pricing-legacy"
-        ],
-        [
-          60,
-          "2026-10-31",
-          115.0,
           "load:pricing-legacy"
         ],
         [
@@ -443,7 +437,15 @@
         "fund_id",
         "price_date"
       ],
-      "rows": []
+      "rows": [
+        [
+          60,
+          "2026-10-31",
+          118.0,
+          114.75,
+          "outside tolerance"
+        ]
+      ]
     },
     "forecasts": {
       "fields": [
