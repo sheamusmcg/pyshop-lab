@@ -48,15 +48,15 @@ class CatalogRepository:
     def __init__(self, session):
         self.session = session
 
-    def list_items(self, brand_id=None, type_id=None, page=1):
+    def list_items(self, brand_id=None, type_id=None, page=1, price_min=None, price_max=None):
         from sqlalchemy import select
         from pyshop.domain.catalog_filter import item_matches
         rows = self.session.scalars(select(ItemModel)).all()
-        matched = [it for it in rows if item_matches(it, brand_id, type_id)]
+        matched = [it for it in rows if item_matches(it, brand_id, type_id, price_min, price_max)]
         start = (page - 1) * self.PAGE_SIZE
         return matched[start:start + self.PAGE_SIZE]
 
-    def count_items(self, brand_id=None, type_id=None):
+    def count_items(self, brand_id=None, type_id=None, price_min=None, price_max=None):
         from sqlalchemy import select
         from pyshop.domain.catalog_filter import filter_predicate_for_count
         rows = self.session.scalars(select(ItemModel)).all()

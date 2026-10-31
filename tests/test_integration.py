@@ -22,3 +22,9 @@ def test_count_matches_filter(repo):
     assert repo.count_items(brand_id=1) == 2
     assert repo.count_items(type_id=1) == 2
     assert repo.count_items() == 4
+
+def test_price_filter_under_10(repo):
+    assert {i.name for i in repo.list_items(price_max=10.0)} == {"Azure Mug"}
+
+def test_price_filter_with_no_matches(repo):
+    assert repo.list_items(price_min=20.0) == []

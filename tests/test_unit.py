@@ -17,3 +17,16 @@ def test_brand_filter_matches():
 def test_type_filter_matches():
     assert item_matches(_item(type_id=1), brand_id=None, type_id=1) is True
     assert item_matches(_item(type_id=2), brand_id=None, type_id=1) is False
+
+
+# Price-range filter
+def test_price_filter_matches_item_in_range():
+    assert item_matches(_item(price=12.0), None, None, price_min=10.0, price_max=15.0) is True
+
+
+def test_price_filter_excludes_item_below_range():
+    assert item_matches(_item(price=8.5), None, None, price_min=10.0, price_max=15.0) is False
+
+
+def test_price_filter_open_ended_top_band():
+    assert item_matches(_item(price=25.0), None, None, price_min=20.0, price_max=None) is True

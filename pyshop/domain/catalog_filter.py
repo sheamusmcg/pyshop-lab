@@ -11,8 +11,20 @@ the paginated count. A new filter must be added to BOTH or page counts drift.
 from typing import Optional
 
 
-def item_matches(item, brand_id: Optional[int], type_id: Optional[int]) -> bool:
-    """The filter predicate. brand_id/type_id of None means 'no filter'."""
+def _in_price_range(price: float, price_min: Optional[float], price_max: Optional[float]) -> bool:
+    """True if the price falls inside the selected band. None means open-ended."""
+    if price_min is not None and price < price_min:
+        return False
+    if price_max is not None and price > price_max:
+        return False
+    return True
+
+
+def item_matches(item, brand_id: Optional[int], type_id: Optional[int],
+                 price_min: Optional[float] = None, price_max: Optional[float] = None) -> bool:
+    """The filter predicate. Any argument of None means 'no filter on that field'."""
+    if price_min is not None or price_max is not None:
+        return _in_price_range(item.price, price_min, price_max)
     if brand_id is not None and item.brand_id != brand_id:
         return False
     if type_id is not None and item.type_id != type_id:
