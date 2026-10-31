@@ -15,9 +15,14 @@ Dependencies point inward: web -> infrastructure -> domain. Never the reverse.
 - E2E (Playwright):     python -m pytest tests/test_e2e.py
 - Coverage:  coverage run -m pytest ... ; coverage report --include="pyshop/*"
 
+- Orders:  POST /order {"lines":[{"item_id":1,"quantity":2}]}  -> records the order and reduces stock
+- Database: in-memory by default; set PYSHOP_DB=sqlite:///path.db for a file (the regression harness does this)
+
 ## Conventions
 - Prices are floats; filter boundaries are min-inclusive, max-exclusive.
 - A filter arg of None means "no filter on that field".
+- Placing an order reduces each item's stock by exactly the quantity ordered, once.
+  The response total and the stored order total come from the same calculation.
 
 ## Gotchas to watch (the lab teaches you to warn the agent about these)
 - The filter predicate is DUPLICATED: domain/catalog_filter.py has both

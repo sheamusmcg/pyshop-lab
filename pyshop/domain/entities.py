@@ -25,3 +25,18 @@ class CatalogItem:
     price: float
     brand_id: int
     type_id: int
+    stock: int = 0
+
+
+@dataclass
+class OrderLine:
+    item_id: int
+    quantity: int
+    unit_price: float
+
+
+@dataclass
+class Order:
+    id: int
+    lines: list
+    total: float

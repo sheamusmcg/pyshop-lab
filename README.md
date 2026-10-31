@@ -79,7 +79,7 @@ filters. Ctrl+C to stop it.
 
     python -m pytest tests/test_unit.py tests/test_integration.py
 
-Six tests should pass. These need no browser.
+Nine tests should pass. These need no browser.
 
 ### 7. (For the end-to-end test) install the Playwright browser - one time
 
@@ -117,6 +117,12 @@ without it.
     pip install coverage
     coverage run -m pytest tests/test_unit.py tests/test_integration.py
     coverage report --include="pyshop/*"
+
+## Orders (Session 2 regression lab)
+`POST /order` with `{"lines":[{"item_id":1,"quantity":2}]}` records an order and
+reduces stock. `GET /order/<id>` returns it. The seed has 30 items with stock.
+Set `PYSHOP_DB=sqlite:///some/file.db` to run against a file database the
+regression harness can reset and inspect.
 
 ## The lab feature
 Add a price-range filter to the catalog page, alongside brand and type.
