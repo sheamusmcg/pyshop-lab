@@ -4,7 +4,8 @@ Maps the domain entities to database tables, and provides the repository the
 web layer calls. The DB provider is swappable - integration tests use SQLite
 in-memory (mirrors eShopOnWeb's EF Core in-memory provider).
 """
-from sqlalchemy import create_engine, Integer, String, Float, ForeignKey
+from datetime import date
+from sqlalchemy import create_engine, Integer, String, Float, ForeignKey, Date, Boolean
 from sqlalchemy.pool import StaticPool
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, sessionmaker
 
@@ -52,6 +53,57 @@ class OrderLineModel(Base):
 
 class OutOfStock(Exception):
     pass
+
+
+# ---- Platform tables (REPRESENTATIVE: a small stand-in for a fund platform) ----
+
+class FundModel(Base):
+    __tablename__ = "funds"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    code: Mapped[str] = mapped_column(String(20))
+    fund_type: Mapped[str] = mapped_column(String(20))      # equity | credit | real_assets
+    region: Mapped[str] = mapped_column(String(10))         # amer | emea | apac
+    commitment: Mapped[float] = mapped_column(Float)
+    called_pct: Mapped[float] = mapped_column(Float)        # 0..1 of commitment called so far
+    has_credit_line: Mapped[bool] = mapped_column(Boolean, default=False)
+
+
+class FundPriceModel(Base):
+    __tablename__ = "fund_prices"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    fund_id: Mapped[int] = mapped_column(ForeignKey("funds.id"))
+    price_date: Mapped[date] = mapped_column(Date)
+    price: Mapped[float] = mapped_column(Float)
+    source: Mapped[str] = mapped_column(String(30))         # which service/loader wrote it
+
+
+class ForecastModel(Base):
+    __tablename__ = "forecasts"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    fund_id: Mapped[int] = mapped_column(ForeignKey("funds.id"))
+    scenario: Mapped[str] = mapped_column(String(20))       # base | downside
+    period: Mapped[str] = mapped_column(String(10))         # 2027Q1 ...
+    metric: Mapped[str] = mapped_column(String(20))         # distribution | call | nav
+    value: Mapped[float] = mapped_column(Float)
+
+
+class LoadRejectionModel(Base):
+    __tablename__ = "load_rejections"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    fund_id: Mapped[int] = mapped_column(ForeignKey("funds.id"))
+    price_date: Mapped[date] = mapped_column(Date)
+    price: Mapped[float] = mapped_column(Float)
+    reference: Mapped[float] = mapped_column(Float)
+    reason: Mapped[str] = mapped_column(String(60))
+
+
+class CallLogModel(Base):
+    """Every outbound service call. Tests read this to prove which dependency ran."""
+    __tablename__ = "call_log"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    service: Mapped[str] = mapped_column(String(40))
+    operation: Mapped[str] = mapped_column(String(40))
+    detail: Mapped[str] = mapped_column(String(200))
 
 
 class OrderRepository:
@@ -172,4 +224,39 @@ def seed(session):
     items = [ItemModel(id=i, name=n, price=pr, brand_id=b, type_id=t, stock=st)
              for i, (n, pr, b, t, st) in enumerate(rows, start=1)]
     session.add_all(brands + types + items)
+    session.add_all(_seed_funds())
+    session.flush()
+    session.add_all(_seed_prices())
     session.commit()
+
+
+FUND_COUNT = 200
+PRICE_DATES = [date(2026, 10, 27), date(2026, 10, 28), date(2026, 10, 29), date(2026, 10, 30)]
+
+
+def _seed_funds():
+    """200 funds, deterministic. Types, regions and credit lines vary so the
+    forecast calculation's branches are all exercised. No randomness."""
+    types = ["equity", "credit", "real_assets"]
+    regions = ["amer", "emea", "apac"]
+    funds = []
+    for i in range(1, FUND_COUNT + 1):
+        funds.append(FundModel(
+            id=i, code=f"F{i:03d}", fund_type=types[i % 3], region=regions[(i // 3) % 3],
+            commitment=float(1_000_000 + (i * 37 % 50) * 100_000),
+            called_pct=round(0.2 + (i * 13 % 60) / 100.0, 2),
+            has_credit_line=(i % 7 == 0)))
+    return funds
+
+
+def _seed_prices():
+    """Four daily prices per fund; each day moves by a small deterministic step.
+    A loader normally writes these; the seed provides a starting dataset."""
+    rows = []
+    for i in range(1, FUND_COUNT + 1):
+        base = 100.0 + (i % 23)
+        for d_i, d in enumerate(PRICE_DATES):
+            rows.append(FundPriceModel(fund_id=i, price_date=d,
+                                       price=round(base + d_i * (0.25 + (i % 5) * 0.1), 4),
+                                       source="seed"))
+    return rows
