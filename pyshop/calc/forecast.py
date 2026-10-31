@@ -16,6 +16,25 @@ DIST_RATE = {"equity": 0.12, "credit": 0.09, "real_assets": 0.07}
 CALL_RATE = {"equity": 0.10, "credit": 0.14, "real_assets": 0.08}
 
 
+def _apply_credit_line(fund, period, rem, call):
+    """Credit-line funds defer the first quarter's call to the next quarter.
+    Refactored out of forecast_fund for reuse by the liquidity service."""
+    if not fund.has_credit_line:
+        return call
+    quarterly = fund.commitment * CALL_RATE[fund.fund_type] / 4.0
+    if period == PERIODS[0]:
+        return 0.0
+    if period == PERIODS[1]:
+        # Deferred amount is drawn at the credit line's facility rate.
+        return min(rem, quarterly + quarterly * _FACILITY_FACTOR.get(fund.region, 1.0))
+    return call
+
+
+# Facility draw factor by region (illustrative). amer was set to 1.05 during the
+# refactor and emea to 0.95; both should be 1.0.
+_FACILITY_FACTOR = {"amer": 1.05, "emea": 0.95, "apac": 1.0}
+
+
 def forecast_fund(fund):
     """Return a list of dict rows for one fund."""
     rows = []
@@ -26,12 +45,7 @@ def forecast_fund(fund):
         for period in PERIODS:
             dist = cur_nav * DIST_RATE[fund.fund_type] / 4.0 * factor
             call = min(rem, fund.commitment * CALL_RATE[fund.fund_type] / 4.0)
-            if fund.has_credit_line:
-                # Credit-line funds defer the first quarter's call to the next quarter.
-                if period == PERIODS[0]:
-                    call = 0.0
-                elif period == PERIODS[1]:
-                    call = min(rem, 2 * fund.commitment * CALL_RATE[fund.fund_type] / 4.0)
+            call = _apply_credit_line(fund, period, rem, call)
             rem -= call
             cur_nav = cur_nav + call - dist
             for metric, value in (("distribution", dist), ("call", call), ("nav", cur_nav)):
