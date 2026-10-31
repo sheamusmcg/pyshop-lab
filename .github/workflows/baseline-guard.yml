@@ -1,0 +1,40 @@
+# baseline-guard.yml - a change to a regression baseline, or a deleted test
+# assertion, needs explicit human approval. This is the enforcement behind the
+# regression-check skill's rule that Claude proposes baseline updates but never
+# applies them. Make this a required status check in branch protection, and
+# add tests/baselines/ to CODEOWNERS so a code owner must approve.
+name: Baseline guard
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: Detect baseline changes and removed assertions
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+          HEAD: ${{ github.event.pull_request.head.sha }}
+          LABELS: ${{ join(github.event.pull_request.labels.*.name, ',') }}
+        run: |
+          set -e
+          BASELINE_DIR=$(python3 -c "import yaml;print(yaml.safe_load(open('regression-check.yml'))['baseline_dir'])" 2>/dev/null || echo tests/baselines)
+          changed=$(git diff --name-only "$BASE" "$HEAD" -- "$BASELINE_DIR" || true)
+          # removed assertion lines in test files (pytest assert / xUnit Assert.)
+          removed=$(git diff -U0 "$BASE" "$HEAD" -- 'tests/**' 'test/**' '*Tests/**' | grep -E '^-\s*(assert\b|Assert\.)' || true)
+          echo "baseline files changed:"; echo "${changed:-  none}"
+          echo "assertions removed:"; echo "${removed:-  none}"
+          if [[ -n "$changed" || -n "$removed" ]]; then
+            if [[ ",$LABELS," == *",baseline-change,"* ]]; then
+              echo "::notice::baseline-change label present; a code owner must approve this PR (CODEOWNERS on $BASELINE_DIR)."
+            else
+              echo "::error::This PR changes a regression baseline or removes a test assertion. Add the 'baseline-change' label with a justification in the PR description, and get code-owner approval."
+              exit 1
+            fi
+          fi

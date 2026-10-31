@@ -1,0 +1,4 @@
+# Copy to .github/CODEOWNERS (or CODEOWNERS at repo root) and set the owners.
+# Baseline files and the regression config need a named reviewer.
+tests/baselines/        @your-org/qa-leads
+regression-check.yml    @your-org/qa-leads
