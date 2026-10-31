@@ -11,16 +11,25 @@ the paginated count. A new filter must be added to BOTH or page counts drift.
 from typing import Optional
 
 
-def item_matches(item, brand_id: Optional[int], type_id: Optional[int]) -> bool:
-    """The filter predicate. brand_id/type_id of None means 'no filter'."""
+def item_matches(item, brand_id: Optional[int], type_id: Optional[int],
+                 price_min: Optional[float] = None, price_max: Optional[float] = None) -> bool:
+    """The filter predicate. Any argument of None means 'no filter on that field'.
+
+    Price: price_min is inclusive, price_max is exclusive (docs/spec.md R5).
+    """
     if brand_id is not None and item.brand_id != brand_id:
         return False
     if type_id is not None and item.type_id != type_id:
         return False
+    if price_min is not None and item.price < price_min:
+        return False
+    if price_max is not None and item.price >= price_max:
+        return False
     return True
 
 
-def filter_predicate_for_count(item, brand_id: Optional[int], type_id: Optional[int]) -> bool:
+def filter_predicate_for_count(item, brand_id: Optional[int], type_id: Optional[int],
+                               price_min: Optional[float] = None, price_max: Optional[float] = None) -> bool:
     """DUPLICATE of item_matches, used for the total count / pagination.
 
     Gotcha: this must stay in sync with item_matches. If you add a price
@@ -31,5 +40,9 @@ def filter_predicate_for_count(item, brand_id: Optional[int], type_id: Optional[
     if brand_id is not None and item.brand_id != brand_id:
         return False
     if type_id is not None and item.type_id != type_id:
+        return False
+    if price_min is not None and item.price < price_min:
+        return False
+    if price_max is not None and item.price >= price_max:
         return False
     return True

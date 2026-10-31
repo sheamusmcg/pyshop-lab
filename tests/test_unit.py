@@ -17,3 +17,16 @@ def test_brand_filter_matches():
 def test_type_filter_matches():
     assert item_matches(_item(type_id=1), brand_id=None, type_id=1) is True
     assert item_matches(_item(type_id=2), brand_id=None, type_id=1) is False
+
+
+# Price-range filter (docs/spec.md R5: minimum inclusive, maximum exclusive)
+def test_price_min_is_inclusive():
+    assert item_matches(_item(price=10.0), None, None, price_min=10.0, price_max=15.0) is True
+
+
+def test_price_max_is_exclusive():
+    assert item_matches(_item(price=15.0), None, None, price_min=10.0, price_max=15.0) is False
+
+
+def test_15_dollar_item_belongs_to_15_20_band():
+    assert item_matches(_item(price=15.0), None, None, price_min=15.0, price_max=20.0) is True
