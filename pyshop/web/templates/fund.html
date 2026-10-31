@@ -1,0 +1,7 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>{{ fund.code }} forecast</title>
+<style>body{font-family:Arial,sans-serif;margin:24px}table{border-collapse:collapse}td,th{border:1px solid #ddd;padding:4px 10px}</style></head>
+<body><h1>{{ fund.code }} <small>{{ fund.fund_type }} · {{ fund.region }}</small></h1>
+<p id="source">Forecast {% if from_cache %}from cache{% else %}calculated{% endif %}</p>
+<table id="forecast"><tr><th>Scenario</th><th>Period</th><th>Metric</th><th>Value</th></tr>
+{% for r in rows %}<tr data-key="{{ r.scenario }}|{{ r.period }}|{{ r.metric }}"><td>{{ r.scenario }}</td><td>{{ r.period }}</td><td>{{ r.metric }}</td><td class="value">{{ "%.2f"|format(r.value) }}</td></tr>{% endfor %}
+</table></body></html>

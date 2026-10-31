@@ -11,6 +11,15 @@ from pyshop.infrastructure.models import (make_engine, make_session, seed,
                                           CatalogRepository, OrderRepository, ItemModel)
 from pyshop.web.catalog import catalog_bp
 from pyshop.web.orders import orders_bp
+from pyshop.web.forecast import forecast_bp
+from pyshop.services.cache import TTLCache
+
+
+class TestClock:
+    """Monotonic clock that tests can advance. Starts at 0."""
+    def __init__(self): self.now = 0.0
+    def __call__(self): return self.now
+    def advance(self, seconds): self.now += seconds
 
 
 def create_app(db_url=None, seed_data=None):
@@ -29,8 +38,13 @@ def create_app(db_url=None, seed_data=None):
         seed(session)
     app.config["REPO"] = CatalogRepository(session)
     app.config["ORDERS"] = OrderRepository(session)
+    app.config["SESSION"] = session
+    clock = TestClock()
+    app.config["CLOCK"] = clock
+    app.config["CACHE"] = TTLCache(ttl_seconds=int(os.environ.get("PYSHOP_CACHE_TTL", "300")), clock=clock)
     app.register_blueprint(catalog_bp)
     app.register_blueprint(orders_bp)
+    app.register_blueprint(forecast_bp)
     return app
 
 

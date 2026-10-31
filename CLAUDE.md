@@ -29,3 +29,11 @@ Dependencies point inward: web -> infrastructure -> domain. Never the reverse.
   item_matches and filter_predicate_for_count. Any new filter must be added to
   BOTH, or the list and the count drift.
 - The repository count must apply the SAME filters as the list.
+
+## Platform modules (representative examples for the regression lab)
+- pyshop/services/pricing.py : PricingV2 (approved) and PricingLegacy (deprecated). Both write call_log.
+- pyshop/batch/load_prices.py : nightly price load, parameterised by --region, --as-of, --tolerance.
+- pyshop/calc/forecast.py + run_forecast.py : per-fund forecast, keyed (fund_id, scenario, period, metric).
+- pyshop/web/forecast.py : GET/PUT /forecast/<id> (cached, PUT invalidates), /report/holdings, /funds/<id> UI,
+  /cache/stats and test-only POST /clock/advance.
+- Approved dependencies are listed in regression-check.yml, not inferred from names.
