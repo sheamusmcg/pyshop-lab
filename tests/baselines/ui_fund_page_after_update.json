@@ -1,0 +1,295 @@
+{
+  "captured_at_commit": "2f73d573d0dcd3d291bb5dabdaa879749cdb5e0b",
+  "branch": "s2-platform",
+  "dirty_worktree": true,
+  "label": "base",
+  "project": "pyshop",
+  "scenario": "ui_fund_page_after_update",
+  "type": "ui",
+  "description": "Fund page shows the updated value after a PUT",
+  "expect_dependencies": null,
+  "business_fields": [],
+  "steps": [
+    {
+      "index": 0,
+      "business_fields": [],
+      "kind": "request",
+      "method": "GET",
+      "path": "/funds/1",
+      "request": null,
+      "response": {
+        "status": 200,
+        "headers": {
+          "Server": "<server>",
+          "Date": "<date>",
+          "Content-Type": "text/html; charset=utf-8",
+          "Content-Length": "3285",
+          "Connection": "close"
+        },
+        "body": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>F001 forecast</title>\n<style>body{font-family:Arial,sans-serif;margin:24px}table{border-collapse:collapse}td,th{border:1px solid #ddd;padding:4px 10px}</style></head>\n<body><h1>F001 <small>credit \u00b7 amer</small></h1>\n<p id=\"source\">Forecast calculated</p>\n<table id=\"forecast\"><tr><th>Scenario</th><th>Period</th><th>Metric</th><th>Value</th></tr>\n<tr data-key=\"base|2027Q1|call\"><td>base</td><td>2027Q1</td><td>call</td><td class=\"value\">164500.00</td></tr><tr data-key=\"base|2027Q1|distribution\"><td>base</td><td>2027Q1</td><td>distribution</td><td class=\"value\">34897.50</td></tr><tr data-key=\"base|2027Q1|nav\"><td>base</td><td>2027Q1</td><td>nav</td><td class=\"value\">1680602.50</td></tr><tr data-key=\"base|2027Q2|call\"><td>base</td><td>2027Q2</td><td>call</td><td class=\"value\">164500.00</td></tr><tr data-key=\"base|2027Q2|distribution\"><td>base</td><td>2027Q2</td><td>distribution</td><td class=\"value\">37813.56</td></tr><tr data-key=\"base|2027Q2|nav\"><td>base</td><td>2027Q2</td><td>nav</td><td class=\"value\">1807288.94</td></tr><tr data-key=\"base|2027Q3|call\"><td>base</td><td>2027Q3</td><td>call</td><td class=\"value\">164500.00</td></tr><tr data-key=\"base|2027Q3|distribution\"><td>base</td><td>2027Q3</td><td>distribution</td><td class=\"value\">40664.00</td></tr><tr data-key=\"base|2027Q3|nav\"><td>base</td><td>2027Q3</td><td>nav</td><td class=\"value\">1931124.94</td></tr><tr data-key=\"base|2027Q4|call\"><td>base</td><td>2027Q4</td><td>call</td><td class=\"value\">164500.00</td></tr><tr data-key=\"base|2027Q4|distribution\"><td>base</td><td>2027Q4</td><td>distribution</td><td class=\"value\">43450.31</td></tr><tr data-key=\"base|2027Q4|nav\"><td>base</td><td>2027Q4</td><td>nav</td><td class=\"value\">2052174.63</td></tr><tr data-key=\"downside|2027Q1|call\"><td>downside</td><td>2027Q1</td><td>call</td><td class=\"value\">164500.00</td></tr><tr data-key=\"downside|2027Q1|distribution\"><td>downside</td><td>2027Q1</td><td>distribution</td><td class=\"value\">29662.88</td></tr><tr data-key=\"downside|2027Q1|nav\"><td>downside</td><td>2027Q1</td><td>nav</td><td class=\"value\">1685837.12</td></tr><tr data-key=\"downside|2027Q2|call\"><td>downside</td><td>2027Q2</td><td>call</td><td class=\"value\">164500.00</td></tr><tr data-key=\"downside|2027Q2|distribution\"><td>downside</td><td>2027Q2</td><td>distribution</td><td class=\"value\">32241.64</td></tr><tr data-key=\"downside|2027Q2|nav\"><td>downside</td><td>2027Q2</td><td>nav</td><td class=\"value\">1818095.49</td></tr><tr data-key=\"downside|2027Q3|call\"><td>downside</td><td>2027Q3</td><td>call</td><td class=\"value\">164500.00</td></tr><tr data-key=\"downside|2027Q3|distribution\"><td>downside</td><td>2027Q3</td><td>distribution</td><td class=\"value\">34771.08</td></tr><tr data-key=\"downside|2027Q3|nav\"><td>downside</td><td>2027Q3</td><td>nav</td><td class=\"value\">1947824.41</td></tr><tr data-key=\"downside|2027Q4|call\"><td>downside</td><td>2027Q4</td><td>call</td><td class=\"value\">164500.00</td></tr><tr data-key=\"downside|2027Q4|distribution\"><td>downside</td><td>2027Q4</td><td>distribution</td><td class=\"value\">37252.14</td></tr><tr data-key=\"downside|2027Q4|nav\"><td>downside</td><td>2027Q4</td><td>nav</td><td class=\"value\">2075072.27</td></tr>\n</table></body></html>"
+      }
+    },
+    {
+      "index": 1,
+      "business_fields": [],
+      "kind": "request",
+      "method": "PUT",
+      "path": "/forecast/1",
+      "request": {
+        "scenario": "base",
+        "period": "2027Q1",
+        "metric": "distribution",
+        "value": 1020000
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Server": "<server>",
+          "Date": "<date>",
+          "Content-Type": "application/json",
+          "Content-Length": "47",
+          "Connection": "close"
+        },
+        "body": {
+          "fund_id": 1,
+          "updated": true,
+          "value": 1020000.0
+        }
+      }
+    },
+    {
+      "index": 2,
+      "business_fields": [
+        "value"
+      ],
+      "kind": "browser",
+      "goto": "/funds/1",
+      "selector": "tr[data-key='base|2027Q1|distribution'] .value",
+      "response": {
+        "status": 200,
+        "body": {
+          "value": "1020000.00"
+        }
+      }
+    }
+  ],
+  "tables": {
+    "fund_prices": {
+      "fields": [
+        "fund_id",
+        "price_date",
+        "price",
+        "source"
+      ],
+      "key": [
+        "fund_id",
+        "price_date"
+      ],
+      "rows": []
+    },
+    "load_rejections": {
+      "fields": [
+        "fund_id",
+        "price_date",
+        "price",
+        "reference",
+        "reason"
+      ],
+      "key": [
+        "fund_id",
+        "price_date"
+      ],
+      "rows": []
+    },
+    "forecasts": {
+      "fields": [
+        "fund_id",
+        "scenario",
+        "period",
+        "metric",
+        "value"
+      ],
+      "key": [
+        "fund_id",
+        "scenario",
+        "period",
+        "metric"
+      ],
+      "rows": [
+        [
+          1,
+          "base",
+          "2027Q1",
+          "call",
+          164500.0
+        ],
+        [
+          1,
+          "base",
+          "2027Q1",
+          "distribution",
+          1020000.0
+        ],
+        [
+          1,
+          "base",
+          "2027Q1",
+          "nav",
+          1680602.5
+        ],
+        [
+          1,
+          "base",
+          "2027Q2",
+          "call",
+          164500.0
+        ],
+        [
+          1,
+          "base",
+          "2027Q2",
+          "distribution",
+          37813.56
+        ],
+        [
+          1,
+          "base",
+          "2027Q2",
+          "nav",
+          1807288.94
+        ],
+        [
+          1,
+          "base",
+          "2027Q3",
+          "call",
+          164500.0
+        ],
+        [
+          1,
+          "base",
+          "2027Q3",
+          "distribution",
+          40664.0
+        ],
+        [
+          1,
+          "base",
+          "2027Q3",
+          "nav",
+          1931124.94
+        ],
+        [
+          1,
+          "base",
+          "2027Q4",
+          "call",
+          164500.0
+        ],
+        [
+          1,
+          "base",
+          "2027Q4",
+          "distribution",
+          43450.31
+        ],
+        [
+          1,
+          "base",
+          "2027Q4",
+          "nav",
+          2052174.63
+        ],
+        [
+          1,
+          "downside",
+          "2027Q1",
+          "call",
+          164500.0
+        ],
+        [
+          1,
+          "downside",
+          "2027Q1",
+          "distribution",
+          29662.88
+        ],
+        [
+          1,
+          "downside",
+          "2027Q1",
+          "nav",
+          1685837.12
+        ],
+        [
+          1,
+          "downside",
+          "2027Q2",
+          "call",
+          164500.0
+        ],
+        [
+          1,
+          "downside",
+          "2027Q2",
+          "distribution",
+          32241.64
+        ],
+        [
+          1,
+          "downside",
+          "2027Q2",
+          "nav",
+          1818095.49
+        ],
+        [
+          1,
+          "downside",
+          "2027Q3",
+          "call",
+          164500.0
+        ],
+        [
+          1,
+          "downside",
+          "2027Q3",
+          "distribution",
+          34771.08
+        ],
+        [
+          1,
+          "downside",
+          "2027Q3",
+          "nav",
+          1947824.41
+        ],
+        [
+          1,
+          "downside",
+          "2027Q4",
+          "call",
+          164500.0
+        ],
+        [
+          1,
+          "downside",
+          "2027Q4",
+          "distribution",
+          37252.14
+        ],
+        [
+          1,
+          "downside",
+          "2027Q4",
+          "nav",
+          2075072.27
+        ]
+      ]
+    }
+  },
+  "calls": {
+    "by_service": {},
+    "count": 0,
+    "sample": []
+  }
+}

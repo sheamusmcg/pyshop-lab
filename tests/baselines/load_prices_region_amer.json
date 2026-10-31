@@ -1,0 +1,514 @@
+{
+  "captured_at_commit": "2f73d573d0dcd3d291bb5dabdaa879749cdb5e0b",
+  "branch": "s2-platform",
+  "dirty_worktree": true,
+  "label": "base",
+  "project": "pyshop",
+  "scenario": "load_prices_region_amer",
+  "type": "batch",
+  "description": "Price load limited to AMER",
+  "expect_dependencies": "approved_only",
+  "business_fields": [],
+  "run": {
+    "command": "python -m pyshop.batch.load_prices --file data/prices_2026-10-31.csv --as-of 2026-10-31 --region amer",
+    "exit_code": 0,
+    "stdout_tail": [
+      "load_prices: as_of=2026-10-31 region=amer loaded=65 rejected=3"
+    ],
+    "summary": {
+      "loaded": 65,
+      "rejected": 3
+    }
+  },
+  "tables": {
+    "fund_prices": {
+      "fields": [
+        "fund_id",
+        "price_date",
+        "price",
+        "source"
+      ],
+      "key": [
+        "fund_id",
+        "price_date"
+      ],
+      "rows": [
+        [
+          1,
+          "2026-10-31",
+          102.4,
+          "load:pricing-v2"
+        ],
+        [
+          2,
+          "2026-10-31",
+          103.8,
+          "load:pricing-v2"
+        ],
+        [
+          9,
+          "2026-10-31",
+          111.6,
+          "load:pricing-v2"
+        ],
+        [
+          10,
+          "2026-10-31",
+          111.0,
+          "load:pricing-v2"
+        ],
+        [
+          18,
+          "2026-10-31",
+          120.2,
+          "load:pricing-v2"
+        ],
+        [
+          19,
+          "2026-10-31",
+          121.6,
+          "load:pricing-v2"
+        ],
+        [
+          20,
+          "2026-10-31",
+          121.0,
+          "load:pricing-v2"
+        ],
+        [
+          27,
+          "2026-10-31",
+          105.8,
+          "load:pricing-v2"
+        ],
+        [
+          28,
+          "2026-10-31",
+          107.2,
+          "load:pricing-v2"
+        ],
+        [
+          29,
+          "2026-10-31",
+          108.6,
+          "load:pricing-v2"
+        ],
+        [
+          36,
+          "2026-10-31",
+          114.4,
+          "load:pricing-v2"
+        ],
+        [
+          37,
+          "2026-10-31",
+          115.8,
+          "load:pricing-v2"
+        ],
+        [
+          38,
+          "2026-10-31",
+          117.2,
+          "load:pricing-v2"
+        ],
+        [
+          45,
+          "2026-10-31",
+          123.0,
+          "load:pricing-v2"
+        ],
+        [
+          46,
+          "2026-10-31",
+          101.4,
+          "load:pricing-v2"
+        ],
+        [
+          47,
+          "2026-10-31",
+          102.8,
+          "load:pricing-v2"
+        ],
+        [
+          54,
+          "2026-10-31",
+          110.6,
+          "load:pricing-v2"
+        ],
+        [
+          55,
+          "2026-10-31",
+          110.0,
+          "load:pricing-v2"
+        ],
+        [
+          56,
+          "2026-10-31",
+          111.4,
+          "load:pricing-v2"
+        ],
+        [
+          63,
+          "2026-10-31",
+          119.2,
+          "load:pricing-v2"
+        ],
+        [
+          64,
+          "2026-10-31",
+          120.6,
+          "load:pricing-v2"
+        ],
+        [
+          65,
+          "2026-10-31",
+          120.0,
+          "load:pricing-v2"
+        ],
+        [
+          72,
+          "2026-10-31",
+          104.8,
+          "load:pricing-v2"
+        ],
+        [
+          73,
+          "2026-10-31",
+          106.2,
+          "load:pricing-v2"
+        ],
+        [
+          74,
+          "2026-10-31",
+          107.6,
+          "load:pricing-v2"
+        ],
+        [
+          81,
+          "2026-10-31",
+          113.4,
+          "load:pricing-v2"
+        ],
+        [
+          82,
+          "2026-10-31",
+          114.8,
+          "load:pricing-v2"
+        ],
+        [
+          83,
+          "2026-10-31",
+          116.2,
+          "load:pricing-v2"
+        ],
+        [
+          90,
+          "2026-10-31",
+          122.0,
+          "load:pricing-v2"
+        ],
+        [
+          91,
+          "2026-10-31",
+          123.4,
+          "load:pricing-v2"
+        ],
+        [
+          92,
+          "2026-10-31",
+          101.8,
+          "load:pricing-v2"
+        ],
+        [
+          99,
+          "2026-10-31",
+          109.6,
+          "load:pricing-v2"
+        ],
+        [
+          100,
+          "2026-10-31",
+          109.0,
+          "load:pricing-v2"
+        ],
+        [
+          101,
+          "2026-10-31",
+          110.4,
+          "load:pricing-v2"
+        ],
+        [
+          108,
+          "2026-10-31",
+          118.2,
+          "load:pricing-v2"
+        ],
+        [
+          109,
+          "2026-10-31",
+          119.6,
+          "load:pricing-v2"
+        ],
+        [
+          110,
+          "2026-10-31",
+          119.0,
+          "load:pricing-v2"
+        ],
+        [
+          117,
+          "2026-10-31",
+          103.8,
+          "load:pricing-v2"
+        ],
+        [
+          118,
+          "2026-10-31",
+          105.2,
+          "load:pricing-v2"
+        ],
+        [
+          119,
+          "2026-10-31",
+          106.6,
+          "load:pricing-v2"
+        ],
+        [
+          126,
+          "2026-10-31",
+          112.4,
+          "load:pricing-v2"
+        ],
+        [
+          127,
+          "2026-10-31",
+          113.8,
+          "load:pricing-v2"
+        ],
+        [
+          128,
+          "2026-10-31",
+          115.2,
+          "load:pricing-v2"
+        ],
+        [
+          135,
+          "2026-10-31",
+          121.0,
+          "load:pricing-v2"
+        ],
+        [
+          136,
+          "2026-10-31",
+          122.4,
+          "load:pricing-v2"
+        ],
+        [
+          137,
+          "2026-10-31",
+          123.8,
+          "load:pricing-v2"
+        ],
+        [
+          144,
+          "2026-10-31",
+          108.6,
+          "load:pricing-v2"
+        ],
+        [
+          145,
+          "2026-10-31",
+          108.0,
+          "load:pricing-v2"
+        ],
+        [
+          146,
+          "2026-10-31",
+          109.4,
+          "load:pricing-v2"
+        ],
+        [
+          153,
+          "2026-10-31",
+          117.2,
+          "load:pricing-v2"
+        ],
+        [
+          154,
+          "2026-10-31",
+          118.6,
+          "load:pricing-v2"
+        ],
+        [
+          155,
+          "2026-10-31",
+          118.0,
+          "load:pricing-v2"
+        ],
+        [
+          162,
+          "2026-10-31",
+          102.8,
+          "load:pricing-v2"
+        ],
+        [
+          163,
+          "2026-10-31",
+          104.2,
+          "load:pricing-v2"
+        ],
+        [
+          164,
+          "2026-10-31",
+          105.6,
+          "load:pricing-v2"
+        ],
+        [
+          171,
+          "2026-10-31",
+          111.4,
+          "load:pricing-v2"
+        ],
+        [
+          172,
+          "2026-10-31",
+          112.8,
+          "load:pricing-v2"
+        ],
+        [
+          173,
+          "2026-10-31",
+          114.2,
+          "load:pricing-v2"
+        ],
+        [
+          181,
+          "2026-10-31",
+          121.4,
+          "load:pricing-v2"
+        ],
+        [
+          182,
+          "2026-10-31",
+          122.8,
+          "load:pricing-v2"
+        ],
+        [
+          189,
+          "2026-10-31",
+          107.6,
+          "load:pricing-v2"
+        ],
+        [
+          190,
+          "2026-10-31",
+          107.0,
+          "load:pricing-v2"
+        ],
+        [
+          191,
+          "2026-10-31",
+          108.4,
+          "load:pricing-v2"
+        ],
+        [
+          198,
+          "2026-10-31",
+          116.2,
+          "load:pricing-v2"
+        ],
+        [
+          200,
+          "2026-10-31",
+          117.0,
+          "load:pricing-v2"
+        ]
+      ]
+    },
+    "load_rejections": {
+      "fields": [
+        "fund_id",
+        "price_date",
+        "price",
+        "reference",
+        "reason"
+      ],
+      "key": [
+        "fund_id",
+        "price_date"
+      ],
+      "rows": [
+        [
+          11,
+          "2026-10-31",
+          115.4,
+          112.05,
+          "outside tolerance"
+        ],
+        [
+          180,
+          "2026-10-31",
+          123.0,
+          119.75,
+          "outside tolerance"
+        ],
+        [
+          199,
+          "2026-10-31",
+          120.6,
+          116.95,
+          "outside tolerance"
+        ]
+      ]
+    },
+    "forecasts": {
+      "fields": [
+        "fund_id",
+        "scenario",
+        "period",
+        "metric",
+        "value"
+      ],
+      "key": [
+        "fund_id",
+        "scenario",
+        "period",
+        "metric"
+      ],
+      "rows": []
+    }
+  },
+  "calls": {
+    "by_service": {
+      "pricing-v2": 68
+    },
+    "count": 68,
+    "sample": [
+      {
+        "service": "pricing-v2",
+        "operation": "price",
+        "detail": "fund=1 as_of=2026-10-31"
+      },
+      {
+        "service": "pricing-v2",
+        "operation": "price",
+        "detail": "fund=2 as_of=2026-10-31"
+      },
+      {
+        "service": "pricing-v2",
+        "operation": "price",
+        "detail": "fund=9 as_of=2026-10-31"
+      },
+      {
+        "service": "pricing-v2",
+        "operation": "price",
+        "detail": "fund=10 as_of=2026-10-31"
+      },
+      {
+        "service": "pricing-v2",
+        "operation": "price",
+        "detail": "fund=11 as_of=2026-10-31"
+      }
+    ]
+  }
+}

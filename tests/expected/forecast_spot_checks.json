@@ -1,0 +1,57 @@
+{
+  "table": "forecasts",
+  "field": "value",
+  "rows": [
+    {
+      "key": [
+        1,
+        "base",
+        "2027Q1",
+        "call"
+      ],
+      "value": 164500.0,
+      "source": "hand: credit fund, commitment 4,700,000 x 0.14 / 4"
+    },
+    {
+      "key": [
+        1,
+        "base",
+        "2027Q1",
+        "distribution"
+      ],
+      "value": 34897.5,
+      "source": "hand: nav0 1,551,000 x 0.09 / 4"
+    },
+    {
+      "key": [
+        1,
+        "base",
+        "2027Q1",
+        "nav"
+      ],
+      "value": 1680602.5,
+      "source": "hand: 1,551,000 + 164,500 - 34,897.50"
+    },
+    {
+      "key": [
+        7,
+        "base",
+        "2027Q1",
+        "call"
+      ],
+      "value": 0.0,
+      "source": "hand: credit-line fund defers the Q1 call"
+    },
+    {
+      "key": [
+        7,
+        "base",
+        "2027Q2",
+        "call"
+      ],
+      "value": 133000.0,
+      "source": "hand: 2 x (commitment 1,900,000 x 0.14 / 4)"
+    }
+  ],
+  "note": "Independently derived from the documented formula in pyshop/calc/forecast.py, not copied from a capture. Reviewed by: <name>"
+}

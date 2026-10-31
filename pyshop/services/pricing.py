@@ -26,7 +26,7 @@ class _PricingBase:
 
     def _log(self, operation, detail):
         self.session.add(CallLogModel(service=self.name, operation=operation, detail=detail))
-        self.session.flush()
+        self.session.commit()   # the log must be durable even if the caller never commits
 
     def _stored(self, fund_id, as_of):
         row = self.session.scalar(

@@ -1,0 +1,498 @@
+{
+  "captured_at_commit": "2f73d573d0dcd3d291bb5dabdaa879749cdb5e0b",
+  "branch": "s2-platform",
+  "dirty_worktree": true,
+  "label": "base",
+  "project": "pyshop",
+  "scenario": "load_prices_region_apac",
+  "type": "batch",
+  "description": "Price load limited to APAC (the rarely run parameter combination)",
+  "expect_dependencies": "approved_only",
+  "business_fields": [],
+  "run": {
+    "command": "python -m pyshop.batch.load_prices --file data/prices_2026-10-31.csv --as-of 2026-10-31 --region apac",
+    "exit_code": 0,
+    "stdout_tail": [
+      "load_prices: as_of=2026-10-31 region=apac loaded=66 rejected=0"
+    ],
+    "summary": {
+      "loaded": 66,
+      "rejected": 0
+    }
+  },
+  "tables": {
+    "fund_prices": {
+      "fields": [
+        "fund_id",
+        "price_date",
+        "price",
+        "source"
+      ],
+      "key": [
+        "fund_id",
+        "price_date"
+      ],
+      "rows": [
+        [
+          6,
+          "2026-10-31",
+          107.4,
+          "load:pricing-legacy"
+        ],
+        [
+          7,
+          "2026-10-31",
+          108.8,
+          "load:pricing-legacy"
+        ],
+        [
+          8,
+          "2026-10-31",
+          110.2,
+          "load:pricing-legacy"
+        ],
+        [
+          15,
+          "2026-10-31",
+          116.0,
+          "load:pricing-legacy"
+        ],
+        [
+          16,
+          "2026-10-31",
+          117.4,
+          "load:pricing-legacy"
+        ],
+        [
+          17,
+          "2026-10-31",
+          118.8,
+          "load:pricing-legacy"
+        ],
+        [
+          24,
+          "2026-10-31",
+          103.6,
+          "load:pricing-legacy"
+        ],
+        [
+          25,
+          "2026-10-31",
+          103.0,
+          "load:pricing-legacy"
+        ],
+        [
+          26,
+          "2026-10-31",
+          104.4,
+          "load:pricing-legacy"
+        ],
+        [
+          33,
+          "2026-10-31",
+          112.2,
+          "load:pricing-legacy"
+        ],
+        [
+          34,
+          "2026-10-31",
+          113.6,
+          "load:pricing-legacy"
+        ],
+        [
+          35,
+          "2026-10-31",
+          113.0,
+          "load:pricing-legacy"
+        ],
+        [
+          42,
+          "2026-10-31",
+          120.8,
+          "load:pricing-legacy"
+        ],
+        [
+          43,
+          "2026-10-31",
+          122.2,
+          "load:pricing-legacy"
+        ],
+        [
+          44,
+          "2026-10-31",
+          123.6,
+          "load:pricing-legacy"
+        ],
+        [
+          51,
+          "2026-10-31",
+          106.4,
+          "load:pricing-legacy"
+        ],
+        [
+          52,
+          "2026-10-31",
+          107.8,
+          "load:pricing-legacy"
+        ],
+        [
+          53,
+          "2026-10-31",
+          109.2,
+          "load:pricing-legacy"
+        ],
+        [
+          60,
+          "2026-10-31",
+          115.0,
+          "load:pricing-legacy"
+        ],
+        [
+          61,
+          "2026-10-31",
+          116.4,
+          "load:pricing-legacy"
+        ],
+        [
+          62,
+          "2026-10-31",
+          117.8,
+          "load:pricing-legacy"
+        ],
+        [
+          69,
+          "2026-10-31",
+          102.6,
+          "load:pricing-legacy"
+        ],
+        [
+          70,
+          "2026-10-31",
+          102.0,
+          "load:pricing-legacy"
+        ],
+        [
+          71,
+          "2026-10-31",
+          103.4,
+          "load:pricing-legacy"
+        ],
+        [
+          78,
+          "2026-10-31",
+          111.2,
+          "load:pricing-legacy"
+        ],
+        [
+          79,
+          "2026-10-31",
+          112.6,
+          "load:pricing-legacy"
+        ],
+        [
+          80,
+          "2026-10-31",
+          112.0,
+          "load:pricing-legacy"
+        ],
+        [
+          87,
+          "2026-10-31",
+          119.8,
+          "load:pricing-legacy"
+        ],
+        [
+          88,
+          "2026-10-31",
+          121.2,
+          "load:pricing-legacy"
+        ],
+        [
+          89,
+          "2026-10-31",
+          122.6,
+          "load:pricing-legacy"
+        ],
+        [
+          96,
+          "2026-10-31",
+          105.4,
+          "load:pricing-legacy"
+        ],
+        [
+          97,
+          "2026-10-31",
+          106.8,
+          "load:pricing-legacy"
+        ],
+        [
+          98,
+          "2026-10-31",
+          108.2,
+          "load:pricing-legacy"
+        ],
+        [
+          105,
+          "2026-10-31",
+          114.0,
+          "load:pricing-legacy"
+        ],
+        [
+          106,
+          "2026-10-31",
+          115.4,
+          "load:pricing-legacy"
+        ],
+        [
+          107,
+          "2026-10-31",
+          116.8,
+          "load:pricing-legacy"
+        ],
+        [
+          114,
+          "2026-10-31",
+          124.6,
+          "load:pricing-legacy"
+        ],
+        [
+          115,
+          "2026-10-31",
+          101.0,
+          "load:pricing-legacy"
+        ],
+        [
+          116,
+          "2026-10-31",
+          102.4,
+          "load:pricing-legacy"
+        ],
+        [
+          123,
+          "2026-10-31",
+          110.2,
+          "load:pricing-legacy"
+        ],
+        [
+          124,
+          "2026-10-31",
+          111.6,
+          "load:pricing-legacy"
+        ],
+        [
+          125,
+          "2026-10-31",
+          111.0,
+          "load:pricing-legacy"
+        ],
+        [
+          132,
+          "2026-10-31",
+          118.8,
+          "load:pricing-legacy"
+        ],
+        [
+          133,
+          "2026-10-31",
+          120.2,
+          "load:pricing-legacy"
+        ],
+        [
+          134,
+          "2026-10-31",
+          121.6,
+          "load:pricing-legacy"
+        ],
+        [
+          141,
+          "2026-10-31",
+          104.4,
+          "load:pricing-legacy"
+        ],
+        [
+          142,
+          "2026-10-31",
+          105.8,
+          "load:pricing-legacy"
+        ],
+        [
+          143,
+          "2026-10-31",
+          107.2,
+          "load:pricing-legacy"
+        ],
+        [
+          150,
+          "2026-10-31",
+          113.0,
+          "load:pricing-legacy"
+        ],
+        [
+          151,
+          "2026-10-31",
+          114.4,
+          "load:pricing-legacy"
+        ],
+        [
+          152,
+          "2026-10-31",
+          115.8,
+          "load:pricing-legacy"
+        ],
+        [
+          159,
+          "2026-10-31",
+          123.6,
+          "load:pricing-legacy"
+        ],
+        [
+          160,
+          "2026-10-31",
+          123.0,
+          "load:pricing-legacy"
+        ],
+        [
+          161,
+          "2026-10-31",
+          101.4,
+          "load:pricing-legacy"
+        ],
+        [
+          168,
+          "2026-10-31",
+          109.2,
+          "load:pricing-legacy"
+        ],
+        [
+          169,
+          "2026-10-31",
+          110.6,
+          "load:pricing-legacy"
+        ],
+        [
+          170,
+          "2026-10-31",
+          110.0,
+          "load:pricing-legacy"
+        ],
+        [
+          177,
+          "2026-10-31",
+          117.8,
+          "load:pricing-legacy"
+        ],
+        [
+          178,
+          "2026-10-31",
+          119.2,
+          "load:pricing-legacy"
+        ],
+        [
+          179,
+          "2026-10-31",
+          120.6,
+          "load:pricing-legacy"
+        ],
+        [
+          186,
+          "2026-10-31",
+          103.4,
+          "load:pricing-legacy"
+        ],
+        [
+          187,
+          "2026-10-31",
+          104.8,
+          "load:pricing-legacy"
+        ],
+        [
+          188,
+          "2026-10-31",
+          106.2,
+          "load:pricing-legacy"
+        ],
+        [
+          195,
+          "2026-10-31",
+          112.0,
+          "load:pricing-legacy"
+        ],
+        [
+          196,
+          "2026-10-31",
+          113.4,
+          "load:pricing-legacy"
+        ],
+        [
+          197,
+          "2026-10-31",
+          114.8,
+          "load:pricing-legacy"
+        ]
+      ]
+    },
+    "load_rejections": {
+      "fields": [
+        "fund_id",
+        "price_date",
+        "price",
+        "reference",
+        "reason"
+      ],
+      "key": [
+        "fund_id",
+        "price_date"
+      ],
+      "rows": []
+    },
+    "forecasts": {
+      "fields": [
+        "fund_id",
+        "scenario",
+        "period",
+        "metric",
+        "value"
+      ],
+      "key": [
+        "fund_id",
+        "scenario",
+        "period",
+        "metric"
+      ],
+      "rows": []
+    }
+  },
+  "calls": {
+    "by_service": {
+      "pricing-legacy": 66
+    },
+    "count": 66,
+    "sample": [
+      {
+        "service": "pricing-legacy",
+        "operation": "price",
+        "detail": "fund=6 as_of=2026-10-31"
+      },
+      {
+        "service": "pricing-legacy",
+        "operation": "price",
+        "detail": "fund=7 as_of=2026-10-31"
+      },
+      {
+        "service": "pricing-legacy",
+        "operation": "price",
+        "detail": "fund=8 as_of=2026-10-31"
+      },
+      {
+        "service": "pricing-legacy",
+        "operation": "price",
+        "detail": "fund=15 as_of=2026-10-31"
+      },
+      {
+        "service": "pricing-legacy",
+        "operation": "price",
+        "detail": "fund=16 as_of=2026-10-31"
+      }
+    ]
+  }
+}

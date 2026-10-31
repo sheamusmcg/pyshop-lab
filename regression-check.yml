@@ -1,85 +1,137 @@
-# regression-check.yml - per-repository configuration for the regression-check skill.
-# The skill is generic; this file declares how THIS project runs and what counts
-# as a business field. Keep it in the repo root. Reviewed like code.
+# regression-check.yml - how THIS repository runs its regression scenarios.
+# The regression-check skill is generic; this file is the project's declaration.
+# Reviewed like code. CI protects baseline_dir.
 
 project: pyshop
-runner: python            # python | dotnet  (selects how scripts invoke commands)
-
-# Where baselines live. The CI guard protects this path.
 baseline_dir: tests/baselines
 
-# How to stand the application up for a capture run. {db} is replaced by an
-# absolute path to a fresh SQLite file for that run; {port} by a free port.
+# ---- Dependencies -----------------------------------------------------------
+# The client decides which services are approved. The skill never infers
+# deprecation from a name. A scenario fails its dependency assertion if any
+# call in call_log went to a service not listed here (unless the scenario
+# declares allow_deprecated: true with a reason).
+approved_dependencies:
+  - pricing-v2
+deprecated_dependencies:
+  - pricing-legacy
+
+# ---- Runtime ----------------------------------------------------------------
 app:
-  start: "PYSHOP_DB=sqlite:///{db} PYSHOP_PORT={port} python -m pyshop.web.app"
+  start: "PYSHOP_DB=sqlite:///{db} PYSHOP_PORT={port} PYSHOP_CACHE_TTL=300 python -m pyshop.web.app"
   ready_url: "http://127.0.0.1:{port}/"
   ready_timeout_s: 20
+  env:
+    PYSHOP_DB: "sqlite:///{db}"        # also exported to batch/calculation commands
 
-# Database lifecycle per run. For SQLite a fresh file is a reset; seed happens
-# on first start (create_app seeds an empty file DB). For a server DB, put the
-# reset/seed commands here and reference them from capture.py.
 database:
   kind: sqlite
-  reset: fresh_file
-  tables:                   # persisted state to snapshot after each scenario
-    - name: orders
-      key: [id]
-      fields: [id, total]
-    - name: order_lines
-      key: [order_id, item_id]
-      fields: [order_id, item_id, quantity, unit_price]
-    - name: items
-      key: [id]
-      fields: [id, stock]
-      where: "id IN (1, 7, 30)"   # only the items scenarios touch; keep snapshots small
+  reset: fresh_file                     # each scenario starts from the seed
+  call_log_table: call_log             # where outbound service calls are recorded
+  tables:                              # persisted state snapshotted after each scenario
+    - { name: fund_prices,     key: [fund_id, price_date], fields: [fund_id, price_date, price, source], where: "price_date = '2026-10-31'" }
+    - { name: load_rejections, key: [fund_id, price_date], fields: [fund_id, price_date, price, reference, reason] }
+    - { name: forecasts,       key: [fund_id, scenario, period, metric], fields: [fund_id, scenario, period, metric, value] }
 
-# Scenarios: each runs against a fresh database. Steps are HTTP calls; the
-# response of every step is captured. Business fields are listed so the diff
-# can name them; everything else in the response is compared too unless
-# listed under normalize.
-scenarios:
-  - id: order_two_mugs
-    description: Order two Azure Mugs (item 1, $8.50, stock 10)
-    steps:
-      - method: POST
-        path: /order
-        json: {"lines": [{"item_id": 1, "quantity": 2}]}
-        business_fields: ["total", "lines[0].quantity", "lines[0].unit_price"]
-      - method: GET
-        path: /order/1
-        business_fields: [total]
-  - id: order_mixed_lines
-    description: One order with two lines (items 1 and 7)
-    steps:
-      - method: POST
-        path: /order
-        json: {"lines": [{"item_id": 1, "quantity": 1}, {"item_id": 7, "quantity": 3}]}
-        business_fields: [total, lines]
-  - id: order_rejected_out_of_stock
-    description: Item 30 has stock 3; ordering 4 is refused and stock is unchanged
-    steps:
-      - method: POST
-        path: /order
-        json: {"lines": [{"item_id": 30, "quantity": 4}]}
-        business_fields: [error]
-  - id: order_bad_body
-    description: Empty lines list is a 400
-    steps:
-      - method: POST
-        path: /order
-        json: {"lines": []}
-        business_fields: [error]
-
-# Values that legitimately differ between runs. Matched by JSON path within a
-# response or a table row; replaced with the placeholder before comparison.
+# ---- Comparison rules -------------------------------------------------------
+tolerances:                            # approved by the reviewer, not chosen to pass
+  default: { abs: 0.0 }
+  forecasts.value: { abs: 0.01 }       # cents; forecast values are rounded to 2dp
 normalize:
-  - path: "$.response.headers.Date"
-    replace: "<date>"
-  - path: "$.response.headers.Server"
-    replace: "<server>"
+  - { path: "$.response.headers.Date",   replace: "<date>" }
+  - { path: "$.response.headers.Server", replace: "<server>" }
 
-# Who may approve a change to a baseline file. Enforced by CI (baseline-guard
-# workflow) + CODEOWNERS, not by this file.
+# ---- Scenarios --------------------------------------------------------------
+# type: service | batch | calculation | ui
+# steps for service/ui: request | cache | clock | fixture
+# A scenario can carry dependency expectations and business_fields.
+scenarios:
+
+  # -- Batch: the nightly price load, standard path and the conditional one --
+  - id: load_prices_standard
+    type: batch
+    description: Nightly price load, all regions, default tolerance
+    command: "python -m pyshop.batch.load_prices --file data/prices_2026-10-31.csv --as-of 2026-10-31"
+    expect_dependencies: approved_only
+    business_fields: ["summary.loaded", "summary.rejected"]
+    parse_stdout: 'loaded=(?P<loaded>\d+) rejected=(?P<rejected>\d+)'
+
+  - id: load_prices_region_amer
+    type: batch
+    description: Price load limited to AMER
+    command: "python -m pyshop.batch.load_prices --file data/prices_2026-10-31.csv --as-of 2026-10-31 --region amer"
+    expect_dependencies: approved_only
+    parse_stdout: 'loaded=(?P<loaded>\d+) rejected=(?P<rejected>\d+)'
+
+  - id: load_prices_region_apac
+    type: batch
+    description: Price load limited to APAC (the rarely run parameter combination)
+    command: "python -m pyshop.batch.load_prices --file data/prices_2026-10-31.csv --as-of 2026-10-31 --region apac"
+    expect_dependencies: approved_only
+    parse_stdout: 'loaded=(?P<loaded>\d+) rejected=(?P<rejected>\d+)'
+
+  # -- Calculation: the forecast across all funds --
+  - id: forecast_all_funds
+    type: calculation
+    description: Forecast for the full fund population; compared row by row on (fund, scenario, period, metric)
+    command: "python -m pyshop.calc.run_forecast"
+    result_table: forecasts
+    expected_values: tests/expected/forecast_spot_checks.json    # independently verified rows
+
+  # -- Service: forecast endpoint under cache conditions --
+  - id: forecast_cache_empty
+    type: service
+    description: First read populates the cache
+    setup: ["python -m pyshop.calc.run_forecast --fund 1"]
+    steps:
+      - { request: { method: GET, path: /forecast/1 }, business_fields: ["from_cache", "rows[0].value"] }
+      - { request: { method: GET, path: /cache/stats }, business_fields: ["hits", "misses"] }
+
+  - id: forecast_cache_hit
+    type: service
+    description: Second read served from cache
+    setup: ["python -m pyshop.calc.run_forecast --fund 1"]
+    steps:
+      - { request: { method: GET, path: /forecast/1 } }
+      - { request: { method: GET, path: /forecast/1 }, business_fields: ["from_cache"] }
+
+  - id: forecast_update_invalidates
+    type: service
+    description: The supported update path invalidates the cached forecast (freshness requirement)
+    setup: ["python -m pyshop.calc.run_forecast --fund 1"]
+    steps:
+      - { request: { method: GET, path: /forecast/1 } }
+      - { request: { method: PUT, path: /forecast/1, json: { scenario: base, period: 2027Q1, metric: distribution, value: 1020000 } }, business_fields: ["updated", "value"] }
+      - { request: { method: GET, path: /forecast/1 }, business_fields: ["from_cache", "rows[1].value"] }
+
+  - id: forecast_cache_expiry
+    type: service
+    description: After TTL the entry expires and is recomputed
+    setup: ["python -m pyshop.calc.run_forecast --fund 1"]
+    steps:
+      - { request: { method: GET, path: /forecast/1 } }
+      - { clock: { advance_seconds: 301 } }
+      - { request: { method: GET, path: /forecast/1 }, business_fields: ["from_cache"] }
+
+  # -- Service: the rarely used report --
+  - id: holdings_report_amer
+    type: service
+    description: Holdings valuation report for AMER as of 2026-10-30
+    expect_dependencies: approved_only
+    steps:
+      - { request: { method: GET, path: "/report/holdings?region=amer&as_of=2026-10-30" },
+          business_fields: ["pricing_service", "total_value", "rows[0].price"] }
+
+  # -- UI: the fund page after an update --
+  - id: ui_fund_page_after_update
+    type: ui
+    description: Fund page shows the updated value after a PUT
+    setup: ["python -m pyshop.calc.run_forecast --fund 1"]
+    steps:
+      - { request: { method: GET, path: /funds/1 } }
+      - { request: { method: PUT, path: /forecast/1, json: { scenario: base, period: 2027Q1, metric: distribution, value: 1020000 } } }
+      - { browser: { goto: /funds/1, read: { selector: "tr[data-key='base|2027Q1|distribution'] .value", as: value } },
+          business_fields: ["value"] }
+
 baseline_approval:
   label: baseline-change
   codeowners_path: tests/baselines/

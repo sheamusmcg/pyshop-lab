@@ -1,0 +1,530 @@
+{
+  "captured_at_commit": "2f73d573d0dcd3d291bb5dabdaa879749cdb5e0b",
+  "branch": "s2-platform",
+  "dirty_worktree": true,
+  "label": "base",
+  "project": "pyshop",
+  "scenario": "holdings_report_amer",
+  "type": "service",
+  "description": "Holdings valuation report for AMER as of 2026-10-30",
+  "expect_dependencies": "approved_only",
+  "business_fields": [],
+  "steps": [
+    {
+      "index": 0,
+      "business_fields": [
+        "pricing_service",
+        "total_value",
+        "rows[0].price"
+      ],
+      "kind": "request",
+      "method": "GET",
+      "path": "/report/holdings?region=amer&as_of=2026-10-30",
+      "request": null,
+      "response": {
+        "status": 200,
+        "headers": {
+          "Server": "<server>",
+          "Date": "<date>",
+          "Content-Type": "application/json",
+          "Content-Length": "4421",
+          "Connection": "close"
+        },
+        "body": {
+          "as_of": "2026-10-30",
+          "pricing_service": "pricing-legacy",
+          "region": "amer",
+          "rows": [
+            {
+              "fund": "F001",
+              "price": 101.7,
+              "units": 15510.0,
+              "value": 1577367.0
+            },
+            {
+              "fund": "F002",
+              "price": 102.9,
+              "units": 15640.0,
+              "value": 1609356.0
+            },
+            {
+              "fund": "F009",
+              "price": 110.3,
+              "units": 33110.0,
+              "value": 3652033.0
+            },
+            {
+              "fund": "F010",
+              "price": 110.5,
+              "units": 9000.0,
+              "value": 994500.0
+            },
+            {
+              "fund": "F011",
+              "price": 111.7,
+              "units": 7310.0,
+              "value": 816527.0
+            },
+            {
+              "fund": "F018",
+              "price": 119.1,
+              "units": 19240.0,
+              "value": 2291484.0
+            },
+            {
+              "fund": "F019",
+              "price": 120.3,
+              "units": 3510.0,
+              "value": 422253.0
+            },
+            {
+              "fund": "F020",
+              "price": 120.5,
+              "units": 20000.0,
+              "value": 2410000.0
+            },
+            {
+              "fund": "F027",
+              "price": 104.9,
+              "units": 41890.0,
+              "value": 4394261.0
+            },
+            {
+              "fund": "F028",
+              "price": 106.1,
+              "units": 11040.0,
+              "value": 1171344.0
+            },
+            {
+              "fund": "F029",
+              "price": 107.3,
+              "units": 12210.0,
+              "value": 1310133.0
+            },
+            {
+              "fund": "F036",
+              "price": 113.7,
+              "units": 28560.0,
+              "value": 3247272.0
+            },
+            {
+              "fund": "F037",
+              "price": 114.9,
+              "units": 6090.0,
+              "value": 699741.0
+            },
+            {
+              "fund": "F038",
+              "price": 116.1,
+              "units": 5440.0,
+              "value": 631584.0
+            },
+            {
+              "fund": "F045",
+              "price": 122.5,
+              "units": 16250.0,
+              "value": 1990625.0
+            },
+            {
+              "fund": "F046",
+              "price": 100.7,
+              "units": 9360.0,
+              "value": 942552.0
+            },
+            {
+              "fund": "F047",
+              "price": 101.9,
+              "units": 15190.0,
+              "value": 1547861.0
+            },
+            {
+              "fund": "F054",
+              "price": 109.3,
+              "units": 35960.0,
+              "value": 3930428.0
+            },
+            {
+              "fund": "F055",
+              "price": 109.5,
+              "units": 33750.0,
+              "value": 3695625.0
+            },
+            {
+              "fund": "F056",
+              "price": 110.7,
+              "units": 8960.0,
+              "value": 991872.0
+            },
+            {
+              "fund": "F063",
+              "price": 118.1,
+              "units": 24190.0,
+              "value": 2856839.0
+            },
+            {
+              "fund": "F064",
+              "price": 119.3,
+              "units": 20160.0,
+              "value": 2405088.0
+            },
+            {
+              "fund": "F065",
+              "price": 119.5,
+              "units": 3750.0,
+              "value": 448125.0
+            },
+            {
+              "fund": "F072",
+              "price": 103.9,
+              "units": 13440.0,
+              "value": 1396416.0
+            },
+            {
+              "fund": "F073",
+              "price": 105.1,
+              "units": 7590.0,
+              "value": 797709.0
+            },
+            {
+              "fund": "F074",
+              "price": 106.3,
+              "units": 10560.0,
+              "value": 1122528.0
+            },
+            {
+              "fund": "F081",
+              "price": 112.7,
+              "units": 30210.0,
+              "value": 3404667.0
+            },
+            {
+              "fund": "F082",
+              "price": 113.9,
+              "units": 29040.0,
+              "value": 3307656.0
+            },
+            {
+              "fund": "F083",
+              "price": 115.1,
+              "units": 24490.0,
+              "value": 2818799.0
+            },
+            {
+              "fund": "F090",
+              "price": 121.5,
+              "units": 20000.0,
+              "value": 2430000.0
+            },
+            {
+              "fund": "F091",
+              "price": 122.7,
+              "units": 17010.0,
+              "value": 2087127.0
+            },
+            {
+              "fund": "F092",
+              "price": 100.9,
+              "units": 10640.0,
+              "value": 1073576.0
+            },
+            {
+              "fund": "F099",
+              "price": 108.3,
+              "units": 10810.0,
+              "value": 1170723.0
+            },
+            {
+              "fund": "F100",
+              "price": 108.5,
+              "units": 6000.0,
+              "value": 651000.0
+            },
+            {
+              "fund": "F101",
+              "price": 109.7,
+              "units": 34310.0,
+              "value": 3763807.0
+            },
+            {
+              "fund": "F108",
+              "price": 117.1,
+              "units": 24640.0,
+              "value": 2885344.0
+            },
+            {
+              "fund": "F109",
+              "price": 118.3,
+              "units": 24510.0,
+              "value": 2899533.0
+            },
+            {
+              "fund": "F110",
+              "price": 118.5,
+              "units": 21000.0,
+              "value": 2488500.0
+            },
+            {
+              "fund": "F117",
+              "price": 102.9,
+              "units": 15990.0,
+              "value": 1645371.0
+            },
+            {
+              "fund": "F118",
+              "price": 104.1,
+              "units": 14040.0,
+              "value": 1461564.0
+            },
+            {
+              "fund": "F119",
+              "price": 105.3,
+              "units": 8710.0,
+              "value": 917163.0
+            },
+            {
+              "fund": "F126",
+              "price": 111.7,
+              "units": 8360.0,
+              "value": 933812.0
+            },
+            {
+              "fund": "F127",
+              "price": 112.9,
+              "units": 30090.0,
+              "value": 3397161.0
+            },
+            {
+              "fund": "F128",
+              "price": 114.1,
+              "units": 29440.0,
+              "value": 3359104.0
+            },
+            {
+              "fund": "F135",
+              "price": 120.5,
+              "units": 19250.0,
+              "value": 2319625.0
+            },
+            {
+              "fund": "F136",
+              "price": 121.7,
+              "units": 20160.0,
+              "value": 2453472.0
+            },
+            {
+              "fund": "F137",
+              "price": 122.9,
+              "units": 17690.0,
+              "value": 2174101.0
+            },
+            {
+              "fund": "F144",
+              "price": 107.3,
+              "units": 12160.0,
+              "value": 1304768.0
+            },
+            {
+              "fund": "F145",
+              "price": 107.5,
+              "units": 11250.0,
+              "value": 1209375.0
+            },
+            {
+              "fund": "F146",
+              "price": 108.7,
+              "units": 6960.0,
+              "value": 756552.0
+            },
+            {
+              "fund": "F153",
+              "price": 116.1,
+              "units": 6090.0,
+              "value": 707049.0
+            },
+            {
+              "fund": "F154",
+              "price": 117.3,
+              "units": 24360.0,
+              "value": 2857428.0
+            },
+            {
+              "fund": "F155",
+              "price": 117.5,
+              "units": 24750.0,
+              "value": 2908125.0
+            },
+            {
+              "fund": "F162",
+              "price": 101.9,
+              "units": 14040.0,
+              "value": 1430676.0
+            },
+            {
+              "fund": "F163",
+              "price": 103.1,
+              "units": 15990.0,
+              "value": 1648569.0
+            },
+            {
+              "fund": "F164",
+              "price": 104.3,
+              "units": 14560.0,
+              "value": 1518608.0
+            },
+            {
+              "fund": "F171",
+              "price": 110.7,
+              "units": 8510.0,
+              "value": 942057.0
+            },
+            {
+              "fund": "F172",
+              "price": 111.9,
+              "units": 8640.0,
+              "value": 966816.0
+            },
+            {
+              "fund": "F173",
+              "price": 113.1,
+              "units": 5390.0,
+              "value": 609609.0
+            },
+            {
+              "fund": "F180",
+              "price": 119.5,
+              "units": 4000.0,
+              "value": 478000.0
+            },
+            {
+              "fund": "F181",
+              "price": 120.7,
+              "units": 18810.0,
+              "value": 2270367.0
+            },
+            {
+              "fund": "F182",
+              "price": 121.9,
+              "units": 20240.0,
+              "value": 2467256.0
+            },
+            {
+              "fund": "F189",
+              "price": 106.3,
+              "units": 40810.0,
+              "value": 4338103.0
+            },
+            {
+              "fund": "F190",
+              "price": 106.5,
+              "units": 12000.0,
+              "value": 1278000.0
+            },
+            {
+              "fund": "F191",
+              "price": 107.7,
+              "units": 11610.0,
+              "value": 1250397.0
+            },
+            {
+              "fund": "F198",
+              "price": 115.1,
+              "units": 26640.0,
+              "value": 3066264.0
+            },
+            {
+              "fund": "F199",
+              "price": 116.3,
+              "units": 6210.0,
+              "value": 722223.0
+            },
+            {
+              "fund": "F200",
+              "price": 116.5,
+              "units": 4000.0,
+              "value": 466000.0
+            }
+          ],
+          "total_value": 128191870.0
+        }
+      }
+    }
+  ],
+  "tables": {
+    "fund_prices": {
+      "fields": [
+        "fund_id",
+        "price_date",
+        "price",
+        "source"
+      ],
+      "key": [
+        "fund_id",
+        "price_date"
+      ],
+      "rows": []
+    },
+    "load_rejections": {
+      "fields": [
+        "fund_id",
+        "price_date",
+        "price",
+        "reference",
+        "reason"
+      ],
+      "key": [
+        "fund_id",
+        "price_date"
+      ],
+      "rows": []
+    },
+    "forecasts": {
+      "fields": [
+        "fund_id",
+        "scenario",
+        "period",
+        "metric",
+        "value"
+      ],
+      "key": [
+        "fund_id",
+        "scenario",
+        "period",
+        "metric"
+      ],
+      "rows": []
+    }
+  },
+  "calls": {
+    "by_service": {
+      "pricing-legacy": 68
+    },
+    "count": 68,
+    "sample": [
+      {
+        "service": "pricing-legacy",
+        "operation": "price",
+        "detail": "fund=1 as_of=2026-10-30"
+      },
+      {
+        "service": "pricing-legacy",
+        "operation": "price",
+        "detail": "fund=2 as_of=2026-10-30"
+      },
+      {
+        "service": "pricing-legacy",
+        "operation": "price",
+        "detail": "fund=9 as_of=2026-10-30"
+      },
+      {
+        "service": "pricing-legacy",
+        "operation": "price",
+        "detail": "fund=10 as_of=2026-10-30"
+      },
+      {
+        "service": "pricing-legacy",
+        "operation": "price",
+        "detail": "fund=11 as_of=2026-10-30"
+      }
+    ]
+  }
+}
