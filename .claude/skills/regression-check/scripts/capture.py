@@ -142,8 +142,11 @@ class App:
     def __enter__(self):
         cmd = self.cfg["app"]["start"].format(db=self.db_path, port=self.port)
         self.log = open(self.log_path, "a"); self.log.write(f"$ {cmd}\n"); self.log.flush()
+        # Own process group, so shutdown reaches the server even when the shell
+        # wrapper exits first, and an interrupted capture leaves no orphans.
         self.proc = subprocess.Popen(cmd, shell=True, cwd=self.repo_root, stdout=self.log, stderr=subprocess.STDOUT,
-                                     env={**env_for(self.cfg, self.db_path, self.port), "PYTHONUNBUFFERED": "1"})
+                                     env={**env_for(self.cfg, self.db_path, self.port), "PYTHONUNBUFFERED": "1"},
+                                     start_new_session=True)
         if not wait_ready(self.cfg["app"]["ready_url"].format(port=self.port), self.cfg["app"].get("ready_timeout_s", 20)):
             self.__exit__(None, None, None)
             sys.stderr.write(f"app did not become ready; see {self.log_path}\n"); sys.exit(3)
@@ -151,9 +154,15 @@ class App:
 
     def __exit__(self, *a):
         if self.proc:
-            self.proc.terminate()
-            try: self.proc.wait(timeout=5)
-            except subprocess.TimeoutExpired: self.proc.kill()
+            import signal
+            for sig in (signal.SIGTERM, signal.SIGKILL):
+                try:
+                    os.killpg(os.getpgid(self.proc.pid), sig)
+                    self.proc.wait(timeout=5); break
+                except ProcessLookupError:
+                    break
+                except subprocess.TimeoutExpired:
+                    continue
         self.log.close()
 
 
