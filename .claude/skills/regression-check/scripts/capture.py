@@ -195,9 +195,14 @@ def run_service_steps(cfg, sc, app, repo_root, log_path):
             adv = step["clock"].get("advance_seconds", 0)
             rec.update({"kind": "clock", "advance_seconds": adv,
                         "response": http("POST", app.base + "/clock/advance", {"seconds": adv})})
+        elif "fixture" in step:
+            # Change controlled state mid-scenario (e.g. the source data after it was cached,
+            # or a fault switch). A shell command run with the scenario's database in env.
+            p = run_cmd(step["fixture"], repo_root, env_for(cfg, app.db_path, app.port), log_path)
+            rec.update({"kind": "fixture", "command": step["fixture"],
+                        "response": {"status": p.returncode, "body": p.stdout.strip().splitlines()[-1:] or None}})
         elif "cache" in step:
             rec.update({"kind": "cache", "action": step["cache"]})
-            # project-specific cache actions are exposed as endpoints; default: stats only
             rec["response"] = http("GET", app.base + "/cache/stats")
         elif "browser" in step:
             if pw is None:

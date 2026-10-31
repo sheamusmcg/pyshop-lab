@@ -97,6 +97,13 @@ class LoadRejectionModel(Base):
     reason: Mapped[str] = mapped_column(String(60))
 
 
+class SettingModel(Base):
+    """Key/value settings. Used by fixtures for test-only switches."""
+    __tablename__ = "settings"
+    key: Mapped[str] = mapped_column(String(60), primary_key=True)
+    value: Mapped[str] = mapped_column(String(200))
+
+
 class CallLogModel(Base):
     """Every outbound service call. Tests read this to prove which dependency ran."""
     __tablename__ = "call_log"

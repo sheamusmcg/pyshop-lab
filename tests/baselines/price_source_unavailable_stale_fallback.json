@@ -1,0 +1,190 @@
+{
+  "captured_at_commit": "5373a047b5ac8a10d9298a66a3e450b920db3dc8",
+  "branch": "s2-platform",
+  "dirty_worktree": true,
+  "label": "base",
+  "project": "pyshop",
+  "scenario": "price_source_unavailable_stale_fallback",
+  "type": "service",
+  "description": "Pricing service unavailable after expiry; a stale cached price is served and flagged",
+  "expect_dependencies": null,
+  "business_fields": [],
+  "steps": [
+    {
+      "index": 0,
+      "business_fields": [],
+      "kind": "request",
+      "method": "GET",
+      "path": "/price/1",
+      "request": null,
+      "response": {
+        "status": 200,
+        "headers": {
+          "Server": "<server>",
+          "Date": "<date>",
+          "Content-Type": "application/json",
+          "Content-Length": "83",
+          "Connection": "close"
+        },
+        "body": {
+          "as_of": "2026-10-30",
+          "from_cache": false,
+          "fund_id": 1,
+          "price": 102.05,
+          "stale": false
+        }
+      }
+    },
+    {
+      "index": 1,
+      "business_fields": [],
+      "kind": "fixture",
+      "command": "python -m pyshop.batch.fixture set-setting --key pricing-v2.unavailable --value 1",
+      "response": {
+        "status": 0,
+        "body": [
+          "fixture: pricing-v2.unavailable = 1"
+        ]
+      }
+    },
+    {
+      "index": 2,
+      "business_fields": [],
+      "kind": "clock",
+      "advance_seconds": 301,
+      "response": {
+        "status": 200,
+        "headers": {
+          "Server": "Werkzeug/3.1.8 Python/3.13.16",
+          "Date": "Sat, 31 Oct 2026 20:53:27 GMT",
+          "Content-Type": "application/json",
+          "Content-Length": "14",
+          "Connection": "close"
+        },
+        "body": {
+          "now": 301.0
+        }
+      }
+    },
+    {
+      "index": 3,
+      "business_fields": [
+        "price",
+        "stale",
+        "from_cache"
+      ],
+      "kind": "request",
+      "method": "GET",
+      "path": "/price/1",
+      "request": null,
+      "response": {
+        "status": 200,
+        "headers": {
+          "Server": "<server>",
+          "Date": "<date>",
+          "Content-Type": "application/json",
+          "Content-Length": "81",
+          "Connection": "close"
+        },
+        "body": {
+          "as_of": "2026-10-30",
+          "from_cache": true,
+          "fund_id": 1,
+          "price": 102.05,
+          "stale": true
+        }
+      }
+    },
+    {
+      "index": 4,
+      "business_fields": [
+        "error"
+      ],
+      "kind": "request",
+      "method": "GET",
+      "path": "/price/2",
+      "request": null,
+      "response": {
+        "status": 503,
+        "headers": {
+          "Server": "<server>",
+          "Date": "<date>",
+          "Content-Type": "application/json",
+          "Content-Length": "52",
+          "Connection": "close"
+        },
+        "body": {
+          "error": "pricing unavailable and no cached price"
+        }
+      }
+    }
+  ],
+  "tables": {
+    "fund_prices": {
+      "fields": [
+        "fund_id",
+        "price_date",
+        "price",
+        "source"
+      ],
+      "key": [
+        "fund_id",
+        "price_date"
+      ],
+      "rows": []
+    },
+    "load_rejections": {
+      "fields": [
+        "fund_id",
+        "price_date",
+        "price",
+        "reference",
+        "reason"
+      ],
+      "key": [
+        "fund_id",
+        "price_date"
+      ],
+      "rows": []
+    },
+    "forecasts": {
+      "fields": [
+        "fund_id",
+        "scenario",
+        "period",
+        "metric",
+        "value"
+      ],
+      "key": [
+        "fund_id",
+        "scenario",
+        "period",
+        "metric"
+      ],
+      "rows": []
+    }
+  },
+  "calls": {
+    "by_service": {
+      "pricing-v2": 3
+    },
+    "count": 3,
+    "sample": [
+      {
+        "service": "pricing-v2",
+        "operation": "price",
+        "detail": "fund=1 as_of=2026-10-30"
+      },
+      {
+        "service": "pricing-v2",
+        "operation": "price",
+        "detail": "fund=1 as_of=2026-10-30"
+      },
+      {
+        "service": "pricing-v2",
+        "operation": "price",
+        "detail": "fund=2 as_of=2026-10-30"
+      }
+    ]
+  }
+}

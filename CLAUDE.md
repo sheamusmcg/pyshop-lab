@@ -36,4 +36,6 @@ Dependencies point inward: web -> infrastructure -> domain. Never the reverse.
 - pyshop/calc/forecast.py + run_forecast.py : per-fund forecast, keyed (fund_id, scenario, period, metric).
 - pyshop/web/forecast.py : GET/PUT /forecast/<id> (cached, PUT invalidates), /report/holdings, /funds/<id> UI,
   /cache/stats and test-only POST /clock/advance.
+- pyshop/web/forecast.py also serves GET /price/<id> (cached; freshness policy in its docstring).
+- pyshop/batch/fixture.py : test fixtures (set-price, set-setting). settings."<service>.unavailable"=1 makes that service raise.
 - Approved dependencies are listed in regression-check.yml, not inferred from names.

@@ -14,8 +14,12 @@ lags by one day), so calling the wrong one produces wrong data, not just a log
 line.
 """
 from datetime import date, timedelta
-from pyshop.infrastructure.models import CallLogModel, FundPriceModel
+from pyshop.infrastructure.models import CallLogModel, FundPriceModel, SettingModel
 from sqlalchemy import select
+
+
+class PricingUnavailable(Exception):
+    pass
 
 
 class _PricingBase:
@@ -27,6 +31,11 @@ class _PricingBase:
     def _log(self, operation, detail):
         self.session.add(CallLogModel(service=self.name, operation=operation, detail=detail))
         self.session.commit()   # the log must be durable even if the caller never commits
+        # Test-only fault switch: a settings row "<service>.unavailable" = "1" makes the
+        # service raise, so a scenario can exercise the fallback path deterministically.
+        flag = self.session.get(SettingModel, f"{self.name}.unavailable")
+        if flag is not None and flag.value == "1":
+            raise PricingUnavailable(self.name)
 
     def _stored(self, fund_id, as_of):
         row = self.session.scalar(

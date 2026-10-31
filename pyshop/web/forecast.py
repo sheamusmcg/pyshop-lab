@@ -11,7 +11,7 @@ from datetime import date
 from flask import Blueprint, jsonify, request, current_app, render_template
 from sqlalchemy import select
 from pyshop.infrastructure.models import ForecastModel, FundModel
-from pyshop.services.pricing import PricingV2, PricingLegacy
+from pyshop.services.pricing import PricingV2, PricingLegacy, PricingUnavailable
 
 forecast_bp = Blueprint("forecast", __name__)
 
@@ -75,6 +75,35 @@ def holdings_report():
                     "value": round(units * price, 2) if price is not None else None})
     return jsonify({"as_of": as_of.isoformat(), "region": region, "pricing_service": pricing.name,
                     "rows": out, "total_value": round(sum(r["value"] or 0 for r in out), 2)})
+
+
+@forecast_bp.get("/price/<int:fund_id>")
+def get_price(fund_id):
+    """Latest price for a fund, cached per fund.
+
+    Freshness policy (illustrative, stated so it can be tested):
+      - A cached price is served for up to the TTL.
+      - If the pricing service is unavailable, a cached price may be served
+        past its TTL for up to 24h, flagged stale=true. With no cached price,
+        the response is 503.
+    The stale-fallback window is a separate, longer-lived entry.
+    """
+    cache, session = current_app.config["CACHE"], current_app.config["SESSION"]
+    as_of = date.fromisoformat(request.args.get("as_of", "2026-10-30"))
+    key = f"price:{fund_id}:{as_of.isoformat()}"
+    cached = cache.get(key)
+    if cached is not None:
+        return jsonify({"fund_id": fund_id, "as_of": as_of.isoformat(), "price": cached, "from_cache": True, "stale": False})
+    try:
+        price = PricingV2(session).price(fund_id, as_of)
+    except PricingUnavailable:
+        fallback = current_app.config["STALE"].get(key)
+        if fallback is None:
+            return jsonify({"error": "pricing unavailable and no cached price"}), 503
+        return jsonify({"fund_id": fund_id, "as_of": as_of.isoformat(), "price": fallback, "from_cache": True, "stale": True})
+    cache.set(key, price)
+    current_app.config["STALE"].set(key, price)
+    return jsonify({"fund_id": fund_id, "as_of": as_of.isoformat(), "price": price, "from_cache": False, "stale": False})
 
 
 @forecast_bp.get("/cache/stats")

@@ -112,6 +112,27 @@ scenarios:
       - { clock: { advance_seconds: 301 } }
       - { request: { method: GET, path: /forecast/1 }, business_fields: ["from_cache"] }
 
+  # -- Service: price lookup under every cache condition (freshness policy in pyshop/web/forecast.py) --
+  - id: price_source_changes_after_caching
+    type: service
+    description: Source price changes after it was cached; within TTL the cached value is served, after TTL the new one
+    steps:
+      - { request: { method: GET, path: /price/1 }, business_fields: ["price", "from_cache"] }
+      - { fixture: "python -m pyshop.batch.fixture set-price --fund 1 --date 2026-10-30 --price 103.00" }
+      - { request: { method: GET, path: /price/1 }, business_fields: ["price", "from_cache"] }
+      - { clock: { advance_seconds: 301 } }
+      - { request: { method: GET, path: /price/1 }, business_fields: ["price", "from_cache"] }
+
+  - id: price_source_unavailable_stale_fallback
+    type: service
+    description: Pricing service unavailable after expiry; a stale cached price is served and flagged
+    steps:
+      - { request: { method: GET, path: /price/1 } }
+      - { fixture: "python -m pyshop.batch.fixture set-setting --key pricing-v2.unavailable --value 1" }
+      - { clock: { advance_seconds: 301 } }
+      - { request: { method: GET, path: /price/1 }, business_fields: ["price", "stale", "from_cache"] }
+      - { request: { method: GET, path: /price/2 }, business_fields: ["error"] }
+
   # -- Service: the rarely used report --
   - id: holdings_report_amer
     type: service
@@ -131,6 +152,13 @@ scenarios:
       - { request: { method: PUT, path: /forecast/1, json: { scenario: base, period: 2027Q1, metric: distribution, value: 1020000 } } }
       - { browser: { goto: /funds/1, read: { selector: "tr[data-key='base|2027Q1|distribution'] .value", as: value } },
           business_fields: ["value"] }
+
+  - id: ui_catalog_price_filter
+    type: ui
+    description: Catalog page filtered to a brand shows only that brand's items and a matching count
+    steps:
+      - { browser: { goto: "/?brand=2", read: { selector: "#count", as: count } }, business_fields: ["count"] }
+      - { browser: { goto: "/?brand=2", read: { selector: "li.item .pname", as: first_item } }, business_fields: ["first_item"] }
 
 baseline_approval:
   label: baseline-change

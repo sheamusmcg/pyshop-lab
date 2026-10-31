@@ -42,6 +42,7 @@ def create_app(db_url=None, seed_data=None):
     clock = TestClock()
     app.config["CLOCK"] = clock
     app.config["CACHE"] = TTLCache(ttl_seconds=int(os.environ.get("PYSHOP_CACHE_TTL", "300")), clock=clock)
+    app.config["STALE"] = TTLCache(ttl_seconds=24 * 3600, clock=clock)   # stale-fallback window
     app.register_blueprint(catalog_bp)
     app.register_blueprint(orders_bp)
     app.register_blueprint(forecast_bp)

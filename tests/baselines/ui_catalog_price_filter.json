@@ -1,0 +1,94 @@
+{
+  "captured_at_commit": "5373a047b5ac8a10d9298a66a3e450b920db3dc8",
+  "branch": "s2-platform",
+  "dirty_worktree": true,
+  "label": "base",
+  "project": "pyshop",
+  "scenario": "ui_catalog_price_filter",
+  "type": "ui",
+  "description": "Catalog page filtered to a brand shows only that brand's items and a matching count",
+  "expect_dependencies": null,
+  "business_fields": [],
+  "steps": [
+    {
+      "index": 0,
+      "business_fields": [
+        "count"
+      ],
+      "kind": "browser",
+      "goto": "/?brand=2",
+      "selector": "#count",
+      "response": {
+        "status": 200,
+        "body": {
+          "count": "Showing 7 of 7"
+        }
+      }
+    },
+    {
+      "index": 1,
+      "business_fields": [
+        "first_item"
+      ],
+      "kind": "browser",
+      "goto": "/?brand=2",
+      "selector": "li.item .pname",
+      "response": {
+        "status": 200,
+        "body": {
+          "first_item": "VS Mug"
+        }
+      }
+    }
+  ],
+  "tables": {
+    "fund_prices": {
+      "fields": [
+        "fund_id",
+        "price_date",
+        "price",
+        "source"
+      ],
+      "key": [
+        "fund_id",
+        "price_date"
+      ],
+      "rows": []
+    },
+    "load_rejections": {
+      "fields": [
+        "fund_id",
+        "price_date",
+        "price",
+        "reference",
+        "reason"
+      ],
+      "key": [
+        "fund_id",
+        "price_date"
+      ],
+      "rows": []
+    },
+    "forecasts": {
+      "fields": [
+        "fund_id",
+        "scenario",
+        "period",
+        "metric",
+        "value"
+      ],
+      "key": [
+        "fund_id",
+        "scenario",
+        "period",
+        "metric"
+      ],
+      "rows": []
+    }
+  },
+  "calls": {
+    "by_service": {},
+    "count": 0,
+    "sample": []
+  }
+}
