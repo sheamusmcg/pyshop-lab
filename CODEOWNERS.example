@@ -2,3 +2,4 @@
 # Baseline files and the regression config need a named reviewer.
 tests/baselines/        @your-org/qa-leads
 regression-check.yml    @your-org/qa-leads
+tests/expected/         @your-org/qa-leads

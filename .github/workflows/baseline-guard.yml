@@ -25,16 +25,18 @@ jobs:
         run: |
           set -e
           BASELINE_DIR=$(python3 -c "import yaml;print(yaml.safe_load(open('regression-check.yml'))['baseline_dir'])" 2>/dev/null || echo tests/baselines)
-          changed=$(git diff --name-only "$BASE" "$HEAD" -- "$BASELINE_DIR" || true)
+          # protected: committed baselines, independently derived expected values, and the
+          # config that holds tolerances and the approved/deprecated dependency lists
+          changed=$(git diff --name-only "$BASE" "$HEAD" -- "$BASELINE_DIR" tests/expected regression-check.yml || true)
           # removed assertion lines in test files (pytest assert / xUnit Assert.)
           removed=$(git diff -U0 "$BASE" "$HEAD" -- 'tests/**' 'test/**' '*Tests/**' | grep -E '^-\s*(assert\b|Assert\.)' || true)
-          echo "baseline files changed:"; echo "${changed:-  none}"
+          echo "protected files changed (baselines, tests/expected, regression-check.yml):"; echo "${changed:-  none}"
           echo "assertions removed:"; echo "${removed:-  none}"
           if [[ -n "$changed" || -n "$removed" ]]; then
             if [[ ",$LABELS," == *",baseline-change,"* ]]; then
-              echo "::notice::baseline-change label present; a code owner must approve this PR (CODEOWNERS on $BASELINE_DIR)."
+              echo "::notice::baseline-change label present; a code owner must approve this PR (CODEOWNERS on $BASELINE_DIR, tests/expected and regression-check.yml)."
             else
-              echo "::error::This PR changes a regression baseline or removes a test assertion. Add the 'baseline-change' label with a justification in the PR description, and get code-owner approval."
+              echo "::error::This PR changes a baseline, an expected-values file, regression-check.yml (tolerances or dependency lists), or removes a test assertion. Add the 'baseline-change' label with a justification in the PR description, and get code-owner approval."
               exit 1
             fi
           fi
