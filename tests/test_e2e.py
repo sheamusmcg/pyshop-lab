@@ -15,10 +15,13 @@ from pyshop.web.app import create_app
 @pytest.fixture(scope="module")
 def live_server():
     app = create_app()
-    srv = make_server("127.0.0.1", 5099, app)
-    t = threading.Thread(target=srv.serve_forever); t.start()
+    # Port 0 lets the OS pick a free port, so two test runs on one machine
+    # (or anything else on a fixed port) cannot collide.
+    srv = make_server("127.0.0.1", 0, app)
+    port = srv.server_port
+    t = threading.Thread(target=srv.serve_forever, daemon=True); t.start()
     time.sleep(0.5)
-    yield "http://127.0.0.1:5099"
+    yield f"http://127.0.0.1:{port}"
     srv.shutdown(); t.join()
 
 def test_catalog_loads_and_filters(live_server):
