@@ -35,3 +35,15 @@ def test_catalog_loads_and_filters(live_server):
         assert "Azure Mug" in page.content()
         assert "VS Mug" not in page.content()
         browser.close()
+
+
+def test_price_filter_narrows_catalog(live_server):
+    with sync_playwright() as pw:
+        browser = pw.chromium.launch()
+        page = browser.new_page()
+        page.goto(live_server)
+        page.select_option("select[name=price]", "under-10")
+        page.wait_for_load_state("networkidle")
+        assert "Azure Mug" in page.content()
+        assert "VS Tee" not in page.content()
+        browser.close()

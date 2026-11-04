@@ -75,7 +75,13 @@
         <option value="1" {% if type_id==1 %}selected{% endif %}>Mug</option>
         <option value="2" {% if type_id==2 %}selected{% endif %}>T-Shirt</option>
       </select>
-      <!-- Lab feature: a price-range dropdown goes here, next to brand/type -->
+      <label for="price">Price</label>
+      <select name="price" id="price" onchange="this.form.submit()">
+        <option value="">All prices</option>
+        {% for key, label in price_bands %}
+        <option value="{{ key }}" {% if price_key==key %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
     </form>
 
     {% if items %}
